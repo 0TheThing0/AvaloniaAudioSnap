@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:AvaloniaDesignTest.Views"
+             xmlns:vm="clr-namespace:AvaloniaDesignTest.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             x:Class="AvaloniaDesignTest.Views.SearchWindowView"
+             x:DataType="vm:SearchWindowViewModel">
+    
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                Spacing="20">
+        <TextBlock FontSize="62" FontWeight="ExtraBold">
+            Let's Explore!
+        </TextBlock>
+        <Button CornerRadius="40"
+                Height="60"
+                Width="250"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#004445"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Foreground="White"
+                FontSize="20" Command="{Binding SearchCommand}"
+                IsEnabled="{Binding !MainWindow.IsSearch}">
+                Analyze file
+        </Button>
+        <StackPanel Height="20">
+            <ProgressBar IsIndeterminate="True" IsVisible="{Binding MainWindow.IsSearch}"></ProgressBar>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

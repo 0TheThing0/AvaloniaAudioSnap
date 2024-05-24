@@ -1,0 +1,34 @@
+﻿{
+  "album": "Зов крови",
+  "album_artists": [
+    "Мельница"
+  ],
+  "album_artists_sort" : [
+    "Mel",
+    "nica"
+  ],
+  "artists" : [
+    "Мельница"
+  ],
+  "disc" : 1,
+  "disc-count" : 4,
+  "first-album-artist" : "Мельница",
+  "first-album-artist-sort" : "Mel",
+  "first-artist" : "Мельница",
+  "genres" : [
+    "folk",
+    "rock"
+  ],
+  "first-genre" : "folk",
+  "isrc" : "1255213",
+  "length" : 1488,
+  "music-brainz-artist-id" : "215515123",
+  "music-brainz-disc-id" : "15134512",
+  "music-brainz-release-id" : "15135",
+  "music-brainz-release-status" : "official",
+  "music-brainz-track-id" : "12515",
+  "track" : 15,
+  "track-count" : 40,
+  "title" : "Ночная кобыла",
+  "year" : 2014
+}

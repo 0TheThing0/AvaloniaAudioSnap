@@ -1,0 +1,105 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="using:AvaloniaDesignTest.Views"
+             xmlns:vm="clr-namespace:AvaloniaDesignTest.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             x:Class="AvaloniaDesignTest.Views.ResultWindowView"
+             x:DataType="vm:ResultWindowViewModel">
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Style/TextBox.xaml"></StyleInclude>
+    </UserControl.Styles>
+    <Grid RowDefinitions="11*,9*">
+        <!--Icons-->
+        <Grid Grid.Row = "0" ColumnDefinitions="1*,6*,1*,7*,1*,6*,1*" Margin="0,20,0,0">
+            
+            <!--Buttons-->
+            <Grid Grid.Column="1" RowDefinitions="2*,3*,1*,3*,7*"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch">
+                <Button Grid.Row="1"
+                        CornerRadius="40"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="#004445"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Foreground="White"
+                        Command="{Binding SearchCommand}"
+                        IsEnabled="{Binding !MainWindow.IsSearch}">
+                    Search more
+                </Button>
+                <Button Grid.Row="3"
+                        CornerRadius="40"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="#004445"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Foreground="White">
+                    Apply changes
+                </Button>
+            </Grid>
+            
+            <!--Track cover-->
+            <views:AlbumView Grid.Column="3">
+            </views:AlbumView>
+            <TextBox Grid.Column="5" Classes="ItemResource"> hello</TextBox>
+            
+            <!--References (I don't know how to do this)-->
+            <StackPanel Grid.Column="5" Margin="0,20,0,0" Spacing="10" VerticalAlignment="Top">
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="1" Grid.ColumnDefinitions="1*,10*,1*" Margin="0,15,0,0">
+            <Border Grid.Column="1" CornerRadius="30,30,0,0"
+                    BorderThickness="6,6,6,0" BorderBrush="Black"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch">
+                <Border CornerRadius="27,27,0,0" HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ClipToBounds="True">
+                    <ListBox
+                             ItemsSource="{Binding Track.MetadataUnits}"
+                             Background="Transparent">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0"></Setter>
+                            </Style>
+                        </ListBox.Styles>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="1*,1*,1*"> 
+                                       <TextBox Grid.Column="0" Classes="Name"
+                                              ZIndex="2"
+                                              Background="#004445"
+                                              Foreground="White"
+                                              Text="{Binding Name}"
+                                              IsReadOnly="True"
+                                              >
+                                       </TextBox>
+                                       <TextBox Grid.Column="1" Classes="ItemResource"
+                                                ZIndex="1"
+                                                Background="#F5F5F5"
+                                                Text="{Binding OldValue}"
+                                                IsReadOnly="True">
+                                       </TextBox>
+                                        <TextBox Grid.Column="2" Classes="ItemResource"
+                                                 ZIndex="0"
+                                                 Background="#D9D9D9"
+                                                 CornerRadius="0"
+                                                 BorderThickness="2,2,0,2"
+                                                 Text="{Binding NewValue}">
+                                        </TextBox>
+                                   </Grid> 
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </Border>
+        </Grid>
+            <!--Track data-->
+    </Grid>
+</UserControl>
