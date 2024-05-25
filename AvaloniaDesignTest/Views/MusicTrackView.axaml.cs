@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace AvaloniaDesignTest.Views;
 
-public partial class AlbumView : UserControl
+public partial class MusicTrackView : UserControl
 {
-    public AlbumView()
+    public MusicTrackView()
     {
         InitializeComponent();
     }

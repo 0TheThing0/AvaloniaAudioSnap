@@ -46,11 +46,7 @@ public class MetadataSettings
             {"artists", typeof(Tag).GetProperty("Artists")},
             {"disc", typeof(Tag).GetProperty("Disc")},
             {"disc-count", typeof(Tag).GetProperty("DiscCount")},
-            {"first-album-artist", typeof(Tag).GetProperty("FirstAlbumArtist")},
-            {"first-album-artist-sort", typeof(Tag).GetProperty("FirstAlbumArtistSort")},
-            {"first_artist", typeof(Tag).GetProperty("FirstArtist")},
             {"genres", typeof(Tag).GetProperty("Genres")},
-            {"first-genre", typeof(Tag).GetProperty("FirstGenre")},
             {"isrc", typeof(Tag).GetProperty("ISRC")},
             {"length", typeof(Tag).GetProperty("Length")},
             {"music-brainz-artist-id", typeof(Tag).GetProperty("MusicBrainzArtistId")},
@@ -64,7 +60,10 @@ public class MetadataSettings
             {"year", typeof(Tag).GetProperty("Year")},
         };
 
-    public Dictionary<string, string> MetadataNameParity { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> MetadataNameParity { get; set; } = new Dictionary<string, string>()
+    {
+
+    };
     
     public IEnumerable<MetadataUnit> GetMetadataUnits(Tag fileMetadata,JsonNode node)
     {
@@ -75,7 +74,10 @@ public class MetadataSettings
             //Getting property of the metadata
             PropertyInfo? property= null;
             TagFieldParity.TryGetValue(metadata,out property);
-
+            
+            if (property==null || !property.CanWrite || !property.CanRead)
+                continue;
+            
             //Getting name for show of the metadata
             string name = metadata;
             if (MetadataNameParity.ContainsKey(metadata))
@@ -87,7 +89,7 @@ public class MetadataSettings
             string oldValue = "";
             try
             {
-                oldValue = ConvertToString(property!.GetValue(fileMetadata));
+                oldValue = MetadataUnit.ConvertToString(property!.GetValue(fileMetadata));
             }
             catch
             {
@@ -99,7 +101,7 @@ public class MetadataSettings
             string newValue = "";
             try
             {
-                newValue = ConvertToString(node[metadata]);
+                newValue = MetadataUnit.ConvertToString(node[metadata]);
             }
             catch {}
 
@@ -109,44 +111,5 @@ public class MetadataSettings
 
         return metadatas;
     }
-
-    private static string ConvertToString(object value)
-    {
-        if (value is string[] strArrayValue)
-        {
-            return String.Join(';', strArrayValue);
-        }
-        if (value is string strValue)
-        {
-            return strValue;
-        }
-        if (value is uint uintValue)
-        {
-            return uintValue.ToString();
-        }
-
-        if (value is JsonValue jsonValue)
-        {
-            if (jsonValue.TryGetValue(out uint jsonVal))
-            {
-                return value.ToString();
-            }
-            if (jsonValue.TryGetValue(out string str))
-            {
-                return str;
-            }
-        }
-
-        if (value is JsonArray jsonArray)
-        {
-            List<string> strList = new List<string>();
-            foreach (var nodeArray in jsonArray)
-            {
-                strList.Add(ConvertToString(nodeArray));
-            }
-            return String.Join(';', strList);
-        }
-
-        return "";
-    }
+    
 }

@@ -12,12 +12,12 @@ namespace AvaloniaDesignTest.ViewModels;
 
 public class ResultWindowViewModel : ViewModelBase
 {
-    private MusicTrack _track;
+    private MusicTrackViewModel _trackViewModel;
 
-    public MusicTrack Track
+    public MusicTrackViewModel TrackViewModel
     {
-        get => _track;
-        set => this.RaiseAndSetIfChanged(ref _track, value);
+        get => _trackViewModel;
+        set => this.RaiseAndSetIfChanged(ref _trackViewModel, value);
     }
     
     public MainWindowViewModel MainWindow { get; init; }
@@ -33,6 +33,10 @@ public class ResultWindowViewModel : ViewModelBase
         SearchCommand = ReactiveCommand.Create(() => { });
     }
 
+    public async void ApplyChanges()
+    {
+        TrackViewModel.ApplyChanges();
+    }
     public async void Search(IStorageFile file)
     {
         FileChromaContext chromaContext = new FileChromaContext();
@@ -43,10 +47,9 @@ public class ResultWindowViewModel : ViewModelBase
         }
         else
         {
+            _trackViewModel = new MusicTrackViewModel(file.Path.LocalPath, chromaContext.GetFingerprint());
             ShowResultCommand.Execute().Subscribe();
+            await _trackViewModel.Search();
         }
-
-        _track = new MusicTrack(file.Path.LocalPath, chromaContext.GetFingerprint());
-        _track.GetMetadata();
-    } 
+    }
 }

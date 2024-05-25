@@ -1,0 +1,18 @@
+﻿{
+  "fingerprint" : "fsdfdsg25252323dgdfgdfgsfsdf",
+  "duration" : 245,
+  "priorities" : {
+      "release-format" : [
+        {"album" :  1.0},
+        {"single" : 1.0}
+      ],
+      "release-country" : [
+        "XW","BLR"
+      ]
+  },
+  "release-properties" : [
+    "album",
+    "title",
+    "artists"
+  ] 
+}

@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaDesignTest", "AvaloniaDesignTest\AvaloniaDesignTest.csproj", "{1C4F96FC-AC96-4234-8F93-522D2A19B1CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chromaprint", "D:\Всякое\Учёба\Chromaprint\Chromaprint\Chromaprint.csproj", "{5248DFF1-DE86-430B-816C-79FA34A52291}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chromaprint", "D:\Всякое\Учёба\Chromaprint\Chromaprint\Chromaprint.csproj", "{23176C18-0121-4833-B583-E2405F8934E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		{1C4F96FC-AC96-4234-8F93-522D2A19B1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C4F96FC-AC96-4234-8F93-522D2A19B1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C4F96FC-AC96-4234-8F93-522D2A19B1CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5248DFF1-DE86-430B-816C-79FA34A52291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5248DFF1-DE86-430B-816C-79FA34A52291}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5248DFF1-DE86-430B-816C-79FA34A52291}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5248DFF1-DE86-430B-816C-79FA34A52291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23176C18-0121-4833-B583-E2405F8934E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23176C18-0121-4833-B583-E2405F8934E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23176C18-0121-4833-B583-E2405F8934E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23176C18-0121-4833-B583-E2405F8934E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

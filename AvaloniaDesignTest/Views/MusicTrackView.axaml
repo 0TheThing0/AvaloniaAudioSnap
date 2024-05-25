@@ -2,32 +2,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:m="clr-namespace:AvaloniaDesignTest.ViewModels"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
-             x:Class="AvaloniaDesignTest.Views.AlbumView">
+             x:Class="AvaloniaDesignTest.Views.MusicTrackView"
+             x:DataType="m:MusicTrackViewModel">
     <Grid RowDefinitions="9*,Auto,Auto">
         <Border Grid.Row="0"
                 Margin="0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
-                CornerRadius="50" 
+                CornerRadius="25" 
                 BorderThickness="5"
                 BorderBrush="Black">
-            <Border CornerRadius="50" ClipToBounds="True" HorizontalAlignment="Center"
+            <Border CornerRadius="20" ClipToBounds="True" HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     ZIndex="0">
-                <Panel Background="Gray" >
+                <Panel MinHeight="250" MinWidth="250" Background="Gray">
                     <Image
                         Stretch="Uniform" 
-                        Source="C:/Users/Илья/Desktop/Some_Type_of_Skin_-_Aurora.png"/>
-                    <Panel>
-                        <PathIcon Height="75" Width="75" Data="{StaticResource music_regular}" />
-                    </Panel>
-                </Panel>
+                        Source="{Binding Cover}"/>
+                    <!--<Panel 
+                        Background="Gray"
+                        IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}">
+                        <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"/>
+                    </Panel>-->
+                </Panel> 
             </Border>
         </Border>
         <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="20"
-                   FontFamily="Inter" FontWeight="ExtraBold" Text="Some type of skin"/>
+                   FontFamily="Inter" FontWeight="ExtraBold" Text="{Binding Title.NewValue}"/>
         <TextBlock Grid.Row="2" HorizontalAlignment="Center" FontSize="16"
-                   FontFamily="Inter" Text="Aurora"/>
+                   FontFamily="Inter" Text="{Binding Artist.NewValue}"
+                   />
     </Grid>
 </UserControl>

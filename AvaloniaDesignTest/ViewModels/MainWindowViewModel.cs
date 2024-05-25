@@ -87,8 +87,8 @@ public class MainWindowViewModel : ViewModelBase
         _resultViewModel.WrongInputCommand.Subscribe(_ => ShowErrorWindow());
         _resultViewModel.ShowResultCommand.Subscribe(_ => ShowResultWindow());
         
-        var res = Task.Run(() => _resultViewModel.Search(file));
-        await res;
+        var r = Task.Run(() => _resultViewModel.Search(file));
+        await r;
         IsSearch = false;
     }
     
@@ -98,9 +98,16 @@ public class MainWindowViewModel : ViewModelBase
         CurrentViewModel = _errorViewModel;
     }
     
-    public void ShowResultWindow()
+    public async void ShowResultWindow()
     {
-        CurrentViewModel = _resultViewModel;
+        if (_resultViewModel != null)
+        {
+            CurrentViewModel = _resultViewModel;
+        }
+        else
+        {
+            CurrentViewModel = _searchViewModel;
+        }
     }
     
     public void ShowSearchWindow()
