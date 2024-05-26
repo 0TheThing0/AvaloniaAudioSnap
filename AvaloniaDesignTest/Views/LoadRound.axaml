@@ -1,0 +1,286 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:AvaloniaDesignTest.Views">
+    <Design.PreviewWith>
+        <controls:LoadRound/>
+    </Design.PreviewWith>
+
+    <Style Selector="controls|LoadRound">
+        <!-- Set Defaults -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ClipToBounds="True">
+                    <Canvas Width="120" Height="120" 
+                            IsHitTestVisible="False">
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_8" Canvas.Left="45" Canvas.Top="00"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_7" Canvas.Left="75" Canvas.Top="15"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_6" Canvas.Left="90" Canvas.Top="45"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_5" Canvas.Left="75" Canvas.Top="75"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_4" Canvas.Left="45" Canvas.Top="90"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_3" Canvas.Left="15" Canvas.Top="75"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30" Classes="ellipse pos_el_2" Canvas.Left="0" Canvas.Top="45"
+                                 Fill="{TemplateBinding Foreground}" />
+                        <Ellipse Width="30" Height="30"  Classes="ellipse pos_el_1" Canvas.Left="15" Canvas.Top="15"
+                                 Fill="{TemplateBinding Foreground}" />
+                    </Canvas>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Ellipse.pos_el_1">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.17" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    
+    <Style Selector="Ellipse.pos_el_2">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0.17" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="1"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>    
+    
+    <Style Selector="Ellipse.pos_el_3">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0.14" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0.84"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>   
+    
+        
+    <Style Selector="Ellipse.pos_el_4">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0.14" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0.67"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>  
+    
+    <Style Selector="Ellipse.pos_el_5">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0.14" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>  
+    
+    <Style Selector="Ellipse.pos_el_6">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0.14" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0.34"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>  
+    
+    <Style Selector="Ellipse.pos_el_7">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0.07" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0.14"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>  
+    
+    
+    <Style Selector="Ellipse.pos_el_8">
+        <Style.Animations>
+            <Animation Duration="0:0:1.5" IterationCount="INFINITE">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.34" />
+                </KeyFrame>
+                <KeyFrame Cue="14%">
+                    <Setter Property="Opacity" Value="0.5" />
+                </KeyFrame>
+                <KeyFrame Cue="28%">
+                    <Setter Property="Opacity" Value="0.67" />
+                </KeyFrame>
+                <KeyFrame Cue="42%">
+                    <Setter Property="Opacity" Value="0.84" />
+                </KeyFrame>
+                <KeyFrame Cue="56%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+                <KeyFrame Cue="70%">
+                    <Setter Property="Opacity" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="84%">
+                    <Setter Property="Opacity" Value="0.07"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.14" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>  
+</Styles>

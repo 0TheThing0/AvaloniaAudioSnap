@@ -14,7 +14,7 @@ public class ResultWindowViewModel : ViewModelBase
 {
     private MusicTrackViewModel _trackViewModel;
 
-    public MusicTrackViewModel TrackViewModel
+    public MusicTrackViewModel Track
     {
         get => _trackViewModel;
         set => this.RaiseAndSetIfChanged(ref _trackViewModel, value);
@@ -35,7 +35,12 @@ public class ResultWindowViewModel : ViewModelBase
 
     public async void ApplyChanges()
     {
-        TrackViewModel.ApplyChanges();
+        Track.ApplyChanges();
+    }
+
+    public async void SearchFileOnline()
+    {
+        await Track.SearchFileOnline();
     }
     public async void Search(IStorageFile file)
     {
@@ -49,7 +54,7 @@ public class ResultWindowViewModel : ViewModelBase
         {
             _trackViewModel = new MusicTrackViewModel(file.Path.LocalPath, chromaContext.GetFingerprint());
             ShowResultCommand.Execute().Subscribe();
-            await _trackViewModel.Search();
+            await _trackViewModel.Analyze();
         }
     }
 }

@@ -20,7 +20,7 @@ public class MetadataUnit : ReactiveObject
         get => _newValue;
         set
         {
-            if (Property?.PropertyType == typeof(uint) && !UInt32.TryParse(value, out _))
+            if (value!="" && Property?.PropertyType == typeof(uint) && !UInt32.TryParse(value, out _))
             {
                 throw new ArgumentException(nameof(NewValue), "Not valid number");
             }
@@ -89,6 +89,8 @@ public class MetadataUnit : ReactiveObject
         }
         if (conversionType == typeof(uint))
         {
+            if (value == "")
+                return 0u;
             return Convert.ToUInt32(value);
         }
         if (conversionType == typeof(string))

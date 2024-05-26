@@ -82,16 +82,24 @@ public class MainWindowViewModel : ViewModelBase
     {
         IsSearch = true;
         
+        CreateResultWindow();
+        if (_resultViewModel is not null)
+        {
+            var r = Task.Run(() => _resultViewModel.Search(file));
+            await r;
+            _libraryViewModel.Tracks.Add(_resultViewModel.Track);
+        }
+
+        IsSearch = false;
+    }
+
+    private void CreateResultWindow()
+    {
         _resultViewModel = new ResultWindowViewModel(this);
         _resultViewModel.SearchCommand.Subscribe(_ => ChooseFile());
         _resultViewModel.WrongInputCommand.Subscribe(_ => ShowErrorWindow());
         _resultViewModel.ShowResultCommand.Subscribe(_ => ShowResultWindow());
-        
-        var r = Task.Run(() => _resultViewModel.Search(file));
-        await r;
-        IsSearch = false;
     }
-    
     
     public void ShowErrorWindow()
     {
@@ -123,6 +131,16 @@ public class MainWindowViewModel : ViewModelBase
     public void ShowLibraryWindow()
     {
         CurrentViewModel = _libraryViewModel;
+    }
+
+    public void ShowResultWindow(MusicTrackViewModel? trackViewModel)
+    {
+        if (trackViewModel is not null)
+        {
+            CreateResultWindow();
+            _resultViewModel.Track = trackViewModel;
+        }
+        ShowResultWindow();
     }
     #endregion
 }

@@ -65,7 +65,7 @@ public class MetadataSettings
 
     };
     
-    public IEnumerable<MetadataUnit> GetMetadataUnits(Tag fileMetadata,JsonNode node)
+    public IEnumerable<MetadataUnit> GetMetadataUnits(Tag fileMetadata,JsonNode? node)
     {
         List<MetadataUnit> metadatas = new List<MetadataUnit>();
 
@@ -101,7 +101,7 @@ public class MetadataSettings
             string newValue = "";
             try
             {
-                newValue = MetadataUnit.ConvertToString(node[metadata]);
+                newValue = MetadataUnit.ConvertToString(node?[metadata]);
             }
             catch {}
 

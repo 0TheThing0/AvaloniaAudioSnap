@@ -2,13 +2,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:AvaloniaDesignTest.Views"
+             xmlns:vm="clr-namespace:AvaloniaDesignTest.ViewModels"
+             xmlns:controls="using:AvaloniaDesignTest.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
-             x:Class="AvaloniaDesignTest.Views.LibraryWindowView">
-    
-    <StackPanel Spacing="20" Margin="30">
-        <TextBlock HorizontalAlignment="Center"
+             x:Class="AvaloniaDesignTest.Views.LibraryWindowView"
+             x:DataType="vm:LibraryWindowViewModel"
+             >
+    <Grid Margin="30,30,30,0" RowDefinitions="Auto,1*" >
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    FontSize="30" FontWeight="ExtraBold">My searches</TextBlock>
-        <ListBox></ListBox>
-    </StackPanel>
+            <ListBox x:Name = "ListBox" 
+                    Grid.Row="1" ItemsSource="{Binding  Tracks}"
+                     Background="Transparent"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+                     SelectionMode="Single"
+                     SelectedItem="{Binding  CurrentMusicTrack}"
+                     >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel 
+                            Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Background="#e8c25a"
+                            CornerRadius="8" ClipToBounds="True"
+                            Padding="5"
+                            BorderBrush="Black"
+                            BorderThickness="1"
+                            DoubleTapped="InputElement_OnDoubleTapped">
+                            
+                            <StackPanel Spacing="5" Width="200">
+                                <Border CornerRadius="8" ClipToBounds="True" HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"  
+                                        Height="200">
+                                    <Panel Background="Gray">
+                                        <Panel Background="Gray">
+                                            <Image
+                                                Width="200"
+                                                Stretch="Uniform" 
+                                                Source="{Binding Cover}"/>
+                                            <Panel Height="200" 
+                                                Background="Gray"
+                                                IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}">
+                                                <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"/>
+                                            </Panel>
+                                        </Panel>
+                                    </Panel> 
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Title.OldValue}">
+                                </TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding Artist.OldValue}"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+    </Grid>
 </UserControl>

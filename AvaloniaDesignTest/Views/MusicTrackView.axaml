@@ -3,9 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:m="clr-namespace:AvaloniaDesignTest.ViewModels"
+             xmlns:controls="using:AvaloniaDesignTest.Views"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="AvaloniaDesignTest.Views.MusicTrackView"
+             
              x:DataType="m:MusicTrackViewModel">
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/LoadRound.axaml" />
+    </UserControl.Styles>
+    
     <Grid RowDefinitions="9*,Auto,Auto">
         <Border Grid.Row="0"
                 Margin="0"
@@ -18,21 +24,27 @@
                     VerticalAlignment="Center"
                     ZIndex="0">
                 <Panel MinHeight="250" MinWidth="250" Background="Gray">
-                    <Image
-                        Stretch="Uniform" 
-                        Source="{Binding Cover}"/>
-                    <!--<Panel 
-                        Background="Gray"
-                        IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}">
-                        <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"/>
-                    </Panel>-->
+                    <controls:LoadRound VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                        Margin="0"
+                                        IsVisible="{Binding IsLoadingCover}">
+                    </controls:LoadRound>
+                    <Panel MinHeight="250" MinWidth="250" Background="Gray" IsVisible="{Binding !IsLoadingCover}">
+                        <Image
+                            Stretch="Uniform" 
+                            Source="{Binding Cover}"/>
+                        <Panel 
+                            Background="Gray"
+                            IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}">
+                            <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"/>
+                        </Panel>
+                    </Panel>
                 </Panel> 
             </Border>
         </Border>
         <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="20"
-                   FontFamily="Inter" FontWeight="ExtraBold" Text="{Binding Title.NewValue}"/>
+                   FontFamily="Inter" FontWeight="ExtraBold" Text="{Binding Title.OldValue}"/>
         <TextBlock Grid.Row="2" HorizontalAlignment="Center" FontSize="16"
-                   FontFamily="Inter" Text="{Binding Artist.NewValue}"
+                   FontFamily="Inter" Text="{Binding Artist.OldValue}"
                    />
     </Grid>
 </UserControl>
