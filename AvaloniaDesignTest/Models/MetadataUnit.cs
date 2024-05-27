@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using ReactiveUI;
 using TagLib;
 
@@ -10,11 +11,26 @@ namespace AvaloniaDesignTest.ViewModels;
 public class MetadataUnit : ReactiveObject
 {
     private string _newValue;
+    private string _oldValue;
+    [JsonPropertyName("field-name")]
+    public string FieldName { get; set; }
+    [JsonIgnore]
     public string Name { get; set; }
-    public string OldValue { get; set; }
-    
-    public PropertyInfo Property { get; set; }
-    
+    [JsonPropertyName("old-value")]
+    public string OldValue  {
+        get => _oldValue;
+        set => this.RaiseAndSetIfChanged(ref _oldValue, value);
+    }
+
+    [JsonIgnore]
+    public PropertyInfo? Property
+    {
+        get => _property;
+        set => this.RaiseAndSetIfChanged(ref _property, value);
+    }
+
+    private PropertyInfo? _property;
+    [JsonPropertyName("new-value")]
     public string NewValue
     {
         get => _newValue;
@@ -32,15 +48,41 @@ public class MetadataUnit : ReactiveObject
     {
         Property = property;
         Name = name;
+        if (MetadataSettings.GlobalSettings.MetadataNameParity.ContainsKey(name))
+        {
+            Name = MetadataSettings.GlobalSettings.MetadataNameParity[name];
+        }
+        FieldName = name;
         OldValue = oldValue;
         NewValue = newValue;
     }
-    
+
+    public MetadataUnit()
+    {
+        
+    }
+
+    public void UpdatePropertyInfo()
+    {
+        Property= null;
+        MetadataSettings.TagFieldParity.TryGetValue(FieldName,out _property);
+        
+        Name = FieldName;
+        if (MetadataSettings.GlobalSettings.MetadataNameParity.ContainsKey(FieldName))
+        {
+            Name = MetadataSettings.GlobalSettings.MetadataNameParity[FieldName];
+        }
+        
+        if (_property == null || !_property.CanWrite || !_property.CanRead)
+        {
+            Property = null;
+        }
+    }
     public static string ConvertToString(object value)
     {
         if (value is string[] strArrayValue)
         {
-            return String.Join(';', strArrayValue);
+            return String.Join("; ", strArrayValue);
         }
         if (value is string strValue)
         {
@@ -70,7 +112,7 @@ public class MetadataUnit : ReactiveObject
             {
                 strList.Add(ConvertToString(nodeArray));
             }
-            return String.Join(';', strList);
+            return String.Join("; ", strList);
         }
 
         return "";
@@ -85,7 +127,7 @@ public class MetadataUnit : ReactiveObject
     {
         if (conversionType == typeof(string[]))
         {
-            return value.Split(';');
+            return value.Split("; ");
         }
         if (conversionType == typeof(uint))
         {

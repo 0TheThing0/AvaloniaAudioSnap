@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using ReactiveUI;
 using Microsoft.Extensions.Configuration;
+using System.Reactive.Concurrency;
 using Chromaprint;
 using TagLib;
 
@@ -48,15 +50,18 @@ public class MainWindowViewModel : ViewModelBase
             _errorViewModel.SearchCommand).Subscribe(
             _ =>
                 ChooseFile());
-
+        RxApp.MainThreadScheduler.Schedule(LoadTracks);
     }
     
     public ViewModelBase CurrentViewModel
     {
         get => _currentViewModel;
-        set => this.RaiseAndSetIfChanged(ref _currentViewModel, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _currentViewModel, value);
+        }
     }
-    
+
     public Window Window
     {
         set => this.RaiseAndSetIfChanged(ref _window, value);
@@ -87,7 +92,18 @@ public class MainWindowViewModel : ViewModelBase
         {
             var r = Task.Run(() => _resultViewModel.Search(file));
             await r;
-            _libraryViewModel.Tracks.Add(_resultViewModel.Track);
+            var track = _libraryViewModel.Tracks.FirstOrDefault(x => x.Filepath == _resultViewModel.Track.Filepath, null);
+            var trackPos = _libraryViewModel.Tracks.IndexOf(
+                track);
+            if (trackPos != -1)
+            {
+                _resultViewModel.Track.LoadedFrom = track.LoadedFrom;
+                _libraryViewModel.Tracks[trackPos] = _resultViewModel.Track;
+            }
+            else
+            {
+                _libraryViewModel.Tracks.Add(_resultViewModel.Track);
+            }
         }
 
         IsSearch = false;
@@ -95,10 +111,16 @@ public class MainWindowViewModel : ViewModelBase
 
     private void CreateResultWindow()
     {
+        _resultViewModel?.Track.SaveAsync();
         _resultViewModel = new ResultWindowViewModel(this);
         _resultViewModel.SearchCommand.Subscribe(_ => ChooseFile());
         _resultViewModel.WrongInputCommand.Subscribe(_ => ShowErrorWindow());
         _resultViewModel.ShowResultCommand.Subscribe(_ => ShowResultWindow());
+    }
+    
+    public void Save()
+    {
+        _resultViewModel?.Track.SaveAsync();
     }
     
     public void ShowErrorWindow()
@@ -143,4 +165,20 @@ public class MainWindowViewModel : ViewModelBase
         ShowResultWindow();
     }
     #endregion
+    
+    private async void LoadTracks()
+    {
+        var tracks = await MusicTrackViewModel.LoadCachedAsync();
+        foreach (var track in tracks)
+        {
+            _libraryViewModel.Tracks.Add(track);
+        }
+
+        foreach (var track in _libraryViewModel.Tracks.ToList())
+        {
+            //TODO: make async
+            await track.ConfigureData();
+            await track.LoadCoverFromFile();
+        }
+    }
 }

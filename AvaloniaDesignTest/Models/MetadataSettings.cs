@@ -80,10 +80,6 @@ public class MetadataSettings
             
             //Getting name for show of the metadata
             string name = metadata;
-            if (MetadataNameParity.ContainsKey(metadata))
-            {
-                name = MetadataNameParity[metadata];
-            }
             
             //Getting old value of tag
             string oldValue = "";

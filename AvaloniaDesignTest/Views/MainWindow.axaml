@@ -9,7 +9,9 @@
         x:Class="AvaloniaDesignTest.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="AudioSnap">
+        Title="AudioSnap"
+        Closing="Window_OnClosing"
+        >
 
     <Window.Styles>
         <Style Selector="Button.Toolbar" >

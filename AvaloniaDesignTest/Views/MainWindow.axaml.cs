@@ -12,4 +12,13 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
+
+    private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        var view = this.DataContext as MainWindowViewModel;
+        if (view != null)
+        {
+            view.Save();
+        }
+    }
 }
