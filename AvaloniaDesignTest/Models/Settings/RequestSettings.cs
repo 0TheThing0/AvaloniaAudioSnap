@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace AvaloniaDesignTest.Models.Settings;
-
+[DataContract]
 public class RequestSettings : ICloneable
 {
-    [JsonPropertyName("observing-metadata")]
+    [DataMember(Name="observing-metadata")]
     public ObservableCollection<string> ObservingMetadata { get; set; } = new ObservableCollection<string>(){
         "album",
         "album-artists",
@@ -33,25 +34,25 @@ public class RequestSettings : ICloneable
         "year"
     };  
 
-    [JsonPropertyName("country-priorities")]
+    [DataMember(Name="country-priorities")]
     public ObservableCollection<string> CountryPriorities { get; set; } = new ObservableCollection<string>();
 
-    [JsonPropertyName("release-format")]
+    [DataMember(Name="release-format")]
     public FormatSettings ReleaseFormatSettings { get; set; } = new FormatSettings();
     
-    [JsonPropertyName("cover")] 
+    [DataMember(Name="cover")] 
     public bool Cover { get; set; } = true;
 
-    [JsonPropertyName("cover-size")] 
+    [DataMember(Name="cover-size")] 
     public int CoverSize { get; set; } = 500;
 
-    [JsonPropertyName("host-address")] 
+    [DataMember(Name="host-address")] 
     public string HostAddress { get; set; } = "musicbrainz.org";
 
-    [JsonPropertyName("host-port")] 
+    [DataMember(Name="host-port")] 
     public int HostPort { get; set; } = 443;
 
-    [JsonPropertyName("matching-rate")]
+    [DataMember(Name="matching-rate")]
     public int MatchingRate { get; set; } = 70;
 
     public object Clone()

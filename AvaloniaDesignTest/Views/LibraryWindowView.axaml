@@ -49,18 +49,18 @@
                                             <Image
                                                 Width="200"
                                                 Stretch="Uniform" 
-                                                Source="{Binding Cover}"/>
+                                                Source="{Binding Track.Cover}"/>
                                             <Panel Height="200" 
                                                 Background="Gray"
-                                                IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}">
+                                                IsVisible="{Binding Track.Cover, Converter={x:Static ObjectConverters.IsNull}}">
                                                 <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"/>
                                             </Panel>
                                         </Panel>
                                     </Panel> 
                                 </Border>
-                                <TextBlock HorizontalAlignment="Center" Foreground="Black" Text="{Binding Title.OldValue}">
+                                <TextBlock HorizontalAlignment="Center" Foreground="Black" Text="{Binding Track.Title.OldValue}">
                                 </TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Foreground="Black" Text="{Binding Artist.OldValue}"/>
+                                <TextBlock HorizontalAlignment="Center" Foreground="Black" Text="{Binding Track.Artist.OldValue}"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

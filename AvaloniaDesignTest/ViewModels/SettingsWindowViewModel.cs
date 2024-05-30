@@ -1,4 +1,5 @@
-﻿using AvaloniaDesignTest.Models.Settings;
+﻿using System;
+using AvaloniaDesignTest.Models.Settings;
 using ReactiveUI;
 
 namespace AvaloniaDesignTest.ViewModels;
@@ -44,6 +45,12 @@ public class SettingsWindowViewModel : ViewModelBase
         _settings = Settings.GlobalSettings.Clone() as Settings;
         _coverPath = Settings.GlobalSettings.GeneralSettings.CoverPath;
         _historyPath = Settings.GlobalSettings.GeneralSettings.HistoryPath;
+        //CurrentSettings.WhenAnyValue(x => x.GeneralSettings.CoverPath).Subscribe(_ => Test());
+    }
+
+    public void Test()
+    {
+        
     }
     
     public void ApplyChanges()

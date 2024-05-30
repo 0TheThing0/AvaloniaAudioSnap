@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
 using System.Text.Json.Nodes;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using AvaloniaDesignTest.Models.Settings;
-using DynamicData;
 using ReactiveUI;
 using TagLib;
 using File = System.IO.File;
@@ -19,87 +16,33 @@ using File = System.IO.File;
 namespace AvaloniaDesignTest.ViewModels;
 
 //This is terrible
-
 public class MusicTrackViewModel : ViewModelBase
 {
-    [JsonIgnore]
     public bool IsLoadingCover
     {
         get => _isLoadingCover;
         set => this.RaiseAndSetIfChanged(ref _isLoadingCover, value);
     }
 
-    [JsonPropertyName("filepath")]
-    public string Filepath
+    public MusicTrack Track
     {
-        get => _filepath;
-        set => this.RaiseAndSetIfChanged(ref _filepath, value);
+        get => _musicTrack;
+        set => this.RaiseAndSetIfChanged(ref _musicTrack, value);
     }
-    
-    [JsonPropertyName("fingerprint")]
-    public string Fingerprint
-    {
-        get => _fingerprint;
-        set => this.RaiseAndSetIfChanged(ref _fingerprint, value);
-    }
-    
-    [JsonPropertyName("metadata-units")]
-    public ObservableCollection<MetadataUnit> MetadataUnits { 
-        get => _metadataUnits;
-        set => this.RaiseAndSetIfChanged(ref _metadataUnits,value); }
-    
-    [JsonIgnore]
-    public Bitmap? Cover
-    {
-        get => _cover;
-        private set => this.RaiseAndSetIfChanged(ref _cover, value);
-    }
-
-    [JsonIgnore]
-    public MetadataUnit Artist  {
-        get => _artist;
-        private set => this.RaiseAndSetIfChanged(ref _artist, value);
-    }
-    
-    [JsonIgnore]
-    public MetadataUnit Title  {
-        get => _title;
-        private set => this.RaiseAndSetIfChanged(ref _title, value);
-    }
-
-    [JsonPropertyName("cover-path")]
-    public string CoverPath
-    {
-        get => _coverPath;
-        set => this.RaiseAndSetIfChanged(ref _coverPath, value);
-    }
-
-    public string LoadedFrom
-    {
-        get => _loadedFrom;
-        set => this.RaiseAndSetIfChanged(ref _loadedFrom, value);
-    }
-    
-    private string _fingerprint;
-    private string _loadedFrom = "";
-    private string _filepath;
-    private string _coverPath = "";
-    private TagLib.File _file;
-    private Bitmap? _cover;
-    private ObservableCollection<MetadataUnit> _metadataUnits = new ObservableCollection<MetadataUnit>();
-    private MetadataUnit _artist;
-    private MetadataUnit _title;
     private bool _isLoadingCover = false;
+    private MusicTrack _musicTrack;
     
     public MusicTrackViewModel()
     {
     }
     public MusicTrackViewModel(string path, string fingerprint)
     {
-        _fingerprint = fingerprint;
-        _file = TagLib.File.Create(path);
-        _filepath = path;
-        _coverPath = "";
+        _musicTrack = new MusicTrack(path, fingerprint);
+    }
+    
+    public MusicTrackViewModel(MusicTrack track)
+    {
+        _musicTrack = track;
     }
     
     /// <summary>
@@ -111,14 +54,14 @@ public class MusicTrackViewModel : ViewModelBase
         IsLoadingCover = true;
         
         
-        Cover = null;
+        Track.Cover = null;
         Uri uri = new Uri(
             coverUrl);
-        _coverPath = uri.Segments.Last();
+        Track.CoverPath = uri.Segments.Last();
         
         //Use cache file to save data
         string downloadPath =
-            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{_coverPath}";
+            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{Track.CoverPath}";
         
         //if this file already exists - load from file
         if (!File.Exists(downloadPath))
@@ -146,13 +89,6 @@ public class MusicTrackViewModel : ViewModelBase
     /// Parse data from json into metadata
     /// </summary>
     /// <param name="node">Json node</param>
-    public void GetMetadata(JsonNode? node = null)
-    {
-        MetadataUnits.Clear();
-        MetadataUnits.AddRange(MetadataSettings.GetMetadataUnits(_file.Tag, node));
-        Artist = MetadataUnits.FirstOrDefault(x=>x.FieldName == "artists",null);
-        Title = MetadataUnits.FirstOrDefault(x=>x.FieldName == "title",null);
-    }
 
     /// <summary>
     ///  Create request to server and parse answer
@@ -164,7 +100,7 @@ public class MusicTrackViewModel : ViewModelBase
         JsonNode node = JsonNode.Parse(jsonstring);
         
         await LoadCoverFromURI("https://ia800201.us.archive.org/16/items/mbid-0875029f-362b-437a-aa84-0f9d6601730e/mbid-0875029f-362b-437a-aa84-0f9d6601730e-38463815033.png");
-        GetMetadata(node);
+        Track.GetMetadata(node);
     }
 
     /// <summary>
@@ -174,17 +110,17 @@ public class MusicTrackViewModel : ViewModelBase
     {
         IsLoadingCover = true;
         
-        var image = _file.Tag.Pictures.FirstOrDefault(x => x.Type == PictureType.FrontCover, null);
+        var image = Track.Tagfile.Tag.Pictures.FirstOrDefault(x => x.Type == PictureType.FrontCover, null);
         if (image is not null)
         {
             using (var stream = new MemoryStream(image.Data.Data))
             {
-                Cover = await Task.Run(() => Bitmap.DecodeToWidth(stream, Settings.GlobalSettings.RequestSettings.CoverSize));
+                Track.Cover = await Task.Run(() => Bitmap.DecodeToWidth(stream, Settings.GlobalSettings.RequestSettings.CoverSize));
             }
         }
         else
         {
-            Cover = null;
+            Track.Cover = null;
         }
         
         IsLoadingCover = false;
@@ -195,36 +131,26 @@ public class MusicTrackViewModel : ViewModelBase
     /// </summary>
     public async Task Analyze()
     {
-        GetMetadata();
+        Track.GetMetadata();
         await SetLocalImage();
     }
-
-    /// <summary>
-    /// Update file data after loading from history
-    /// </summary>
-    public async Task ConfigureData()
-    {
-        _file = TagLib.File.Create(_filepath);
-        UpdateOldValues();
-        Artist = MetadataUnits.FirstOrDefault(x=>x.FieldName == "artists",null);
-        Title = MetadataUnits.FirstOrDefault(x=>x.FieldName == "title",null);
-    }
+    
     
     /// <summary>
     /// Apply changes for every metadata
     /// </summary>
     public async Task ApplyChanges()
     {
-        foreach (var unit in MetadataUnits)
+        foreach (var unit in Track.MetadataUnits)
         {
-            unit.ApplyChange(_file.Tag);
+            unit.ApplyChange(Track.Tagfile.Tag);
         }
 
         //Loading cover from cache file and save it to music file
         string filepath =
-            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{_coverPath}";
+            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{Track.CoverPath}";
         
-        if (_coverPath != "" && !IsLoadingCover && File.Exists(filepath))
+        if (Track.CoverPath != "" && !IsLoadingCover && File.Exists(filepath))
         {
             Picture pic = new Picture()
             {
@@ -232,28 +158,16 @@ public class MusicTrackViewModel : ViewModelBase
                 MimeType = System.Net.Mime.MediaTypeNames.Image.Bmp
             };
             pic.Data = TagLib.ByteVector.FromPath(filepath);
-            _file.Tag.Pictures = new TagLib.IPicture[] { pic };
+            Track.Tagfile.Tag.Pictures = new TagLib.IPicture[] { pic };
         }
 
         //Saving metadata
-        _coverPath = "";
-        _file.Save();
+        Track.CoverPath = "";
+        Track.Tagfile.Save();
         
         //Updating view
-        UpdateOldValues();
-        SetLocalImage().RunSynchronously();
-    }
-
-    /// <summary>
-    /// Update associated properties
-    /// </summary>
-    private void UpdateOldValues()
-    {
-        foreach (var unit in MetadataUnits)
-        {
-            unit.UpdatePropertyInfo();
-            unit.OldValue = MetadataUnit.ConvertToString(unit.Property?.GetValue(_file.Tag));
-        }
+        Track.UpdateOldValues();
+        await SetLocalImage();
     }
     
     /// <summary>
@@ -265,7 +179,7 @@ public class MusicTrackViewModel : ViewModelBase
         
         
         string filepath =
-            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{_coverPath}";
+            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{Track.CoverPath}";
         
         
         if (File.Exists(filepath))
@@ -273,7 +187,7 @@ public class MusicTrackViewModel : ViewModelBase
             var imageStream = await File.ReadAllBytesAsync(filepath);
             using (MemoryStream a = new MemoryStream(imageStream))
             {
-                Cover = await Task.Run(() => Bitmap.DecodeToWidth(a, Settings.GlobalSettings.RequestSettings.CoverSize));
+                Track.Cover = await Task.Run(() => Bitmap.DecodeToWidth(a, Settings.GlobalSettings.RequestSettings.CoverSize));
 
             }
         }
@@ -284,60 +198,6 @@ public class MusicTrackViewModel : ViewModelBase
         
         IsLoadingCover = false;
     }
-
-    /// <summary>
-    /// Save track to history directory
-    /// </summary>
-    public async Task SaveAsync()
-    {
-        if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.HistoryPath))
-        {
-            Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.HistoryPath);
-        }
-
-        //if a file was loaded from history, a new file will not be created
-        //Otherwise new file will be created
-        string filename;
-        if (this._loadedFrom == "")
-        {
-            using (SHA256 mySha256 = SHA256.Create())
-            {
-                DateTime time = DateTime.Now;
-                filename = Convert.ToBase64String(mySha256.ComputeHash(BitConverter.GetBytes(time.ToBinary())));
-            }
-        }
-        else
-        {
-            filename = _loadedFrom;
-        }
-
-        
-        using (var fs = File.Create($"{Settings.GlobalSettings.GeneralSettings.HistoryPath}{Path.DirectorySeparatorChar}{filename}"))
-        {
-            await SaveToStreamAsync(this, fs);
-        }
-    }
-    
-    /// <summary>
-    /// Save musictrack to stream
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="stream"></param>
-    private static async Task SaveToStreamAsync(MusicTrackViewModel data, Stream stream)
-    {
-        await JsonSerializer.SerializeAsync(stream, data);
-    }
-    
-    /// <summary>
-    /// Load musictrack from stream
-    /// </summary>
-    /// <param name="stream"></param>
-    /// <returns></returns>
-    public static async Task<MusicTrackViewModel> LoadFromStream(Stream stream)
-    {
-        return (await JsonSerializer.DeserializeAsync<MusicTrackViewModel>(stream).ConfigureAwait(false))!;
-    }
-
     
     //Load files from history
     public static async Task<IEnumerable<MusicTrackViewModel>> LoadCachedAsync()
@@ -355,9 +215,9 @@ public class MusicTrackViewModel : ViewModelBase
         {
             if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
             await using var fs = File.OpenRead(file);
-            var track = await LoadFromStream(fs).ConfigureAwait(false);
+            var track = await MusicTrack.LoadFromStream(fs).ConfigureAwait(false);
             track.LoadedFrom = Path.GetFileName(file);
-            results.Add(track);
+            results.Add(new MusicTrackViewModel(track));
         }
 
         return results;

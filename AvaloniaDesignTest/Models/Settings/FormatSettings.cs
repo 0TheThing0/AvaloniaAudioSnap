@@ -1,43 +1,45 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace AvaloniaDesignTest.Models.Settings;
 
+[DataContract]
 public class FormatSettings : ICloneable
 {
-    [JsonPropertyName("album")]
+    [DataMember(Order = 2,Name = "album")]
     public int Album { get; set; } = 50;
-    [JsonPropertyName("single")]
+    [DataMember(Name="single")]
     public int Single { get; set; } = 50;
-    [JsonPropertyName("ep")]
+    [DataMember(Name="ep")]
     public int EP { get; set; } = 50;
-    [JsonPropertyName("other")]
+    [DataMember(Name="other")]
     public int Other { get; set; } = 50;
-    [JsonPropertyName("broadcast")]
+    [DataMember(Name="broadcast")]
     public int Broadcast { get; set; } = 50;
-    [JsonPropertyName("audio-drama")]
+    [DataMember(Name="audio-drama")]
     public int AudioDrama { get; set; } = 50;
-    [JsonPropertyName("audiobook")]
+    [DataMember(Name="audiobook")]
     public int Audiobook { get; set; } = 50;
-    [JsonPropertyName("compilation")]
+    [DataMember(Name="compilation")]
     public int Compilation { get; set; } = 50;
-    [JsonPropertyName("dj-mix")]
+    [DataMember(Name="dj-mix")]
     public int DjMix { get; set; } = 50;
-    [JsonPropertyName("demo")]
+    [DataMember(Name="demo")]
     public int Demo { get; set; } = 50;
-    [JsonPropertyName("field-recording")]
+    [DataMember(Name="field-recording")]
     public int FieldRecording { get; set; } = 50;
-    [JsonPropertyName("interview")]
+    [DataMember(Name="interview")]
     public int Interview { get; set; } = 50;
-    [JsonPropertyName("live")]
+    [DataMember(Name="live")]
     public int Live { get; set; } = 50;
-    [JsonPropertyName("mixtape")]
+    [DataMember(Name="mixtape")]
     public int Mixtape { get; set; } = 50;
-    [JsonPropertyName("remix")]
+    [DataMember(Name="remix")]
     public int Remix { get; set; } = 50;
-    [JsonPropertyName("soundtrack")]
+    [DataMember(Name="soundtrack")]
     public int Soundtrack { get; set; } = 50;
-    [JsonPropertyName("spokenword")]
+    [DataMember(Name="spokenword")]
     public int Spokenword { get; set; } = 50;
 
     public object Clone()

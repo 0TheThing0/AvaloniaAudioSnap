@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace AvaloniaDesignTest.Models.Settings;
 
-public class Settings : ICloneable
+[DataContract]
+public class Settings : ReactiveObject, ICloneable
 {
+    
     public static Settings GlobalSettings = new Settings();
 
-    [JsonPropertyName("general-settings")] 
+    [DataMember(Name="general-settings")] 
     public GeneralSettings GeneralSettings { get; set; } = new GeneralSettings();
 
-    [JsonPropertyName("request-settings")]
+    [DataMember(Name="request-settings")]
     public RequestSettings RequestSettings { get; set; } = new RequestSettings();
     
     public object Clone()
@@ -37,6 +42,8 @@ public class Settings : ICloneable
 
     private static async Task SaveToStreamAsync(Settings obj, Stream stream)
     {
-        await JsonSerializer.SerializeAsync(stream, obj);
+       
+        var ser = new DataContractJsonSerializer(typeof(Settings));
+        ser.WriteObject(stream, obj);
     }
 }

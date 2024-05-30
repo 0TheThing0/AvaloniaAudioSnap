@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using AvaloniaDesignTest.Models.Settings;
@@ -9,32 +10,38 @@ using TagLib;
 
 namespace AvaloniaDesignTest.ViewModels;
 
+[DataContract]
 public class MetadataUnit : ReactiveObject
 {
     private string _newValue;
     private string _oldValue;
+    private string _name ;
     private PropertyInfo? _property;
     
-    [JsonPropertyName("field-name")]
+    [DataMember(Name="field-name")]
     public string FieldName { get; set; }
-    
-    [JsonIgnore]
-    public string Name { get; set; }
-    
-    [JsonPropertyName("old-value")]
+
+    [IgnoreDataMember]
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+
+    [DataMember(Name="old-value")]
     public string OldValue  {
         get => _oldValue;
         set => this.RaiseAndSetIfChanged(ref _oldValue, value);
     }
 
-    [JsonIgnore]
+    [IgnoreDataMember]
     public PropertyInfo? Property
     {
         get => _property;
         set => this.RaiseAndSetIfChanged(ref _property, value);
     }
     
-    [JsonPropertyName("new-value")]
+    [DataMember(Name="new-value")]
     public string NewValue
     {
         get => _newValue;
@@ -61,11 +68,6 @@ public class MetadataUnit : ReactiveObject
         FieldName = name;
         _oldValue = oldValue;
         _newValue = newValue;
-    }
-
-    public MetadataUnit()
-    {
-        
     }
 
     

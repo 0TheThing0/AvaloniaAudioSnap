@@ -1,16 +1,17 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace AvaloniaDesignTest.Web;
 
 public class AudioSnapServerRequest
 {
-    [JsonPropertyName("fingerprint")]
+    [DataMember(Name="fingerprint")]
     public string Fingerprint { get; set; }
     
-    [JsonPropertyName("duration")]
+    [DataMember(Name="duration")]
     public int Duration { get; set; }
     
-    [JsonPropertyName("priorities")]
+    [DataMember(Name="priorities")]
     public RequestPriorities Priorities { get; set; }
     
     public AudioSnapServerRequest()

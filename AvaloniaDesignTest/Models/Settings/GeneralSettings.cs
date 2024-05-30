@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace AvaloniaDesignTest.Models.Settings;
 
+[DataContract]
 public class GeneralSettings : ICloneable
 {
-    [JsonPropertyName("cover-path")] 
+    [DataMember(Name="cover-path")] 
     public string CoverPath { get; set; } = "Cache";
 
-    [JsonPropertyName("history-path")] 
+    [DataMember(Name="history-path")] 
     public string HistoryPath { get; set; } = "History";
 
-    [JsonPropertyName("history-size")] 
+    [DataMember(Name="history-size")] 
     public int HistorySize { get; set; } = 20;
     
-    [JsonPropertyName("name-parity")]
+    [DataMember(Name="name-parity")]
     public Dictionary<string, string> MetadataNameParity { get; set; } = new Dictionary<string, string>()
     {
-
+        {"album","Album"}
     };
 
     public object Clone()

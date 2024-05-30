@@ -31,10 +31,10 @@
                     <Panel MinHeight="250" MinWidth="250" Background="Gray" IsVisible="{Binding !IsLoadingCover}">
                         <Image
                             Stretch="Uniform" 
-                            Source="{Binding Cover}"/>
+                            Source="{Binding Track.Cover}"/>
                         <Panel 
                             Background="Gray"
-                            IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}">
+                            IsVisible="{Binding Track.Cover, Converter={x:Static ObjectConverters.IsNull}}">
                             <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"/>
                         </Panel>
                     </Panel>
@@ -42,9 +42,9 @@
             </Border>
         </Border>
         <SelectableTextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="20"
-                   FontFamily="Inter" FontWeight="ExtraBold" Foreground="Black" Text="{Binding Title.OldValue}"/>
+                   FontFamily="Inter" FontWeight="ExtraBold" Foreground="Black" Text="{Binding Track.Title.OldValue}"/>
         <SelectableTextBlock Grid.Row="2" HorizontalAlignment="Center" FontSize="16"
-                   FontFamily="Inter" Foreground="Black" Text="{Binding Artist.OldValue}"
+                   FontFamily="Inter" Foreground="Black" Text="{Binding Track.Artist.OldValue}"
                    />
     </Grid>
 </UserControl>

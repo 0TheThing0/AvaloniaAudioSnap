@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using ReactiveUI;
 using System.Reactive.Concurrency;
+using System.Runtime.Serialization.Json;
 using System.Text.Json;
 using AvaloniaDesignTest.Models.Settings;
 
@@ -53,7 +54,8 @@ public class MainWindowViewModel : ViewModelBase
         {
             using (FileStream fs = new FileStream("appsettings.json", FileMode.OpenOrCreate))
             {
-                var settings = JsonSerializer.Deserialize<Settings>(fs);
+                var des = new DataContractJsonSerializer(typeof(Settings));
+                var settings = des.ReadObject(fs) as Settings;
                 if (settings!=null)
                     Settings.GlobalSettings = settings;
             }
@@ -62,7 +64,7 @@ public class MainWindowViewModel : ViewModelBase
         catch
         {
         }
-        
+        Settings.GlobalSettings.Save();
         //Creating Settings viewmodel with new settings
         _settingsViewModel = new SettingsWindowViewModel(this);
 
@@ -132,11 +134,12 @@ public class MainWindowViewModel : ViewModelBase
         
         //Adding this track to history
         //TODO: redo adding
-        var track = _libraryViewModel.Tracks.FirstOrDefault(x => x.Filepath == _resultViewModel.Track.Filepath, null);
-        var trackPos = _libraryViewModel.Tracks.IndexOf(track);
+        var viewmodel =
+            _libraryViewModel.Tracks.FirstOrDefault(x => x.Track.Filepath == _resultViewModel.Track.Track.Filepath, null);
+        var trackPos = _libraryViewModel.Tracks.IndexOf(viewmodel);
         if (trackPos != -1)
         {
-            _resultViewModel.Track.LoadedFrom = track.LoadedFrom;
+            _resultViewModel.Track.Track.LoadedFrom = viewmodel.Track.LoadedFrom;
             _libraryViewModel.Tracks[trackPos] = _resultViewModel.Track;
         }
         else
@@ -153,7 +156,7 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     private void CreateResultWindow()
     {
-        _resultViewModel?.Track.SaveAsync();
+        _resultViewModel?.Track.Track.SaveAsync();
         _resultViewModel = new ResultWindowViewModel(this);
         _resultViewModel.SearchCommand.Subscribe(_ => ChooseFile());
         _resultViewModel.WrongInputCommand.Subscribe(_ => ShowErrorWindow());
@@ -165,7 +168,7 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public void Save()
     {
-        _resultViewModel?.Track.SaveAsync();
+        _resultViewModel?.Track.Track.SaveAsync();
     }
     
     /// <summary>
@@ -238,7 +241,7 @@ public class MainWindowViewModel : ViewModelBase
         foreach (var track in _libraryViewModel.Tracks.ToList())
         {
             //TODO: make async
-            await track.ConfigureData();
+            await track.Track.ConfigureData();
             await track.LoadCoverFromFile();
         }
     }
