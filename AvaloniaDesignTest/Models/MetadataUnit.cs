@@ -13,10 +13,14 @@ public class MetadataUnit : ReactiveObject
 {
     private string _newValue;
     private string _oldValue;
+    private PropertyInfo? _property;
+    
     [JsonPropertyName("field-name")]
     public string FieldName { get; set; }
+    
     [JsonIgnore]
     public string Name { get; set; }
+    
     [JsonPropertyName("old-value")]
     public string OldValue  {
         get => _oldValue;
@@ -29,8 +33,7 @@ public class MetadataUnit : ReactiveObject
         get => _property;
         set => this.RaiseAndSetIfChanged(ref _property, value);
     }
-
-    private PropertyInfo? _property;
+    
     [JsonPropertyName("new-value")]
     public string NewValue
     {
@@ -45,6 +48,7 @@ public class MetadataUnit : ReactiveObject
             this.RaiseAndSetIfChanged(ref _newValue, value);
         }
     }
+    
     public MetadataUnit(string name, string oldValue, string newValue, PropertyInfo property)
     {
         Property = property;
@@ -55,8 +59,8 @@ public class MetadataUnit : ReactiveObject
         }
         
         FieldName = name;
-        OldValue = oldValue;
-        NewValue = newValue;
+        _oldValue = oldValue;
+        _newValue = newValue;
     }
 
     public MetadataUnit()
@@ -64,6 +68,10 @@ public class MetadataUnit : ReactiveObject
         
     }
 
+    
+    /// <summary>
+    /// Set new property info for metadata unit if it's possible
+    /// </summary>
     public void UpdatePropertyInfo()
     {
         Property= null;
@@ -80,41 +88,58 @@ public class MetadataUnit : ReactiveObject
             Property = null;
         }
     }
-    public static string ConvertToString(object value)
+    
+    /// <summary>
+    /// Covert object to string
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns>String representation for object or null</returns>
+    public static string? ConvertToString(object value)
     {
-        if (value is string[] strArrayValue)
+        try
         {
-            return String.Join("; ", strArrayValue);
-        }
-        if (value is string strValue)
-        {
-            return strValue;
-        }
-        if (value is uint uintValue)
-        {
-            return uintValue.ToString();
-        }
+            if (value is string[] strArrayValue)
+            {
+                return String.Join("; ", strArrayValue);
+            }
 
-        if (value is JsonValue jsonValue)
-        {
-            if (jsonValue.TryGetValue(out uint jsonVal))
+            if (value is string strValue)
             {
-                return value.ToString();
+                return strValue;
             }
-            if (jsonValue.TryGetValue(out string str))
+
+            if (value is uint uintValue)
             {
-                return str;
+                return uintValue.ToString();
+            }
+
+            if (value is JsonValue jsonValue)
+            {
+                if (jsonValue.TryGetValue(out uint jsonVal))
+                {
+                    return jsonVal.ToString();
+                }
+
+                if (jsonValue.TryGetValue(out string str))
+                {
+                    return str;
+                }
+            }
+
+            if (value is JsonArray jsonArray)
+            {
+                List<string> strList = new List<string>();
+                foreach (var nodeArray in jsonArray)
+                {
+                    strList.Add(ConvertToString(nodeArray));
+                }
+
+                return String.Join("; ", strList);
             }
         }
-
-        if (value is JsonArray jsonArray)
+        catch
         {
-            List<string> strList = new List<string>();
-            foreach (var nodeArray in jsonArray)
-            {
-                strList.Add(ConvertToString(nodeArray));
-            }
-            return String.Join("; ", strList);
+            return null;
         }
 
         return "";
@@ -125,7 +150,13 @@ public class MetadataUnit : ReactiveObject
        Property.SetValue((Tag)tag, StringToSaveType(NewValue, Property.PropertyType));
     }
     
-    public static object StringToSaveType(string value, Type conversionType)
+    /// <summary>
+    /// Convert string to special type
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="conversionType"></param>
+    /// <returns>Instance of new object or null</returns>
+    public static object? StringToSaveType(string value, Type conversionType)
     {
         if (conversionType == typeof(string[]))
         {

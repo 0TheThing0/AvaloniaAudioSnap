@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using AvaloniaDesignTest.Models.Settings;
-using AvaloniaDesignTest.Web;
 using TagLib;
 
 namespace AvaloniaDesignTest.ViewModels;
 
 public class MetadataSettings
 {
-    public static readonly Dictionary<string, PropertyInfo> TagFieldParity =
-        new Dictionary<string, PropertyInfo>()
+    public static readonly Dictionary<string, PropertyInfo?> TagFieldParity =
+        new Dictionary<string, PropertyInfo?>()
         {
             {"album", typeof(Tag).GetProperty("Album")},
             {"album-artists", typeof(Tag).GetProperty("AlbumArtists")},
@@ -50,23 +48,11 @@ public class MetadataSettings
             string name = metadata;
             
             //Getting old value of tag
-            string oldValue = "";
-            try
-            {
-                oldValue = MetadataUnit.ConvertToString(property!.GetValue(fileMetadata));
-            }
-            catch
-            {
-
-            }
+            string oldValue = MetadataUnit.ConvertToString(property!.GetValue(fileMetadata));
+            
             //Getting new value
-            //TODO: Looks very bad
-            string newValue = "";
-            try
-            {
-                newValue = MetadataUnit.ConvertToString(node?[metadata]);
-            }
-            catch {}
+            string newValue = MetadataUnit.ConvertToString(node?[metadata]);
+            
             //Setting new metadata
             metadatas.Add(new MetadataUnit(name,oldValue,newValue,property));
         }

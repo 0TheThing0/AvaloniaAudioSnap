@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
-using AvaloniaDesignTest.Models.Settings;
+﻿using AvaloniaDesignTest.Models.Settings;
 using ReactiveUI;
 
 namespace AvaloniaDesignTest.ViewModels;
+
+//That is so BAD
 public class SettingsWindowViewModel : ViewModelBase
 {
-    private bool _isDirty = false;
     public Settings CurrentSettings
     {
         get => _settings;
@@ -32,10 +32,12 @@ public class SettingsWindowViewModel : ViewModelBase
         }
     }
 
+    public MainWindowViewModel MainWindow { get; init; }
+    
     private Settings _settings;
     private string _coverPath;
     private string _historyPath;
-    public MainWindowViewModel MainWindow { get; init; }
+    
     public SettingsWindowViewModel(MainWindowViewModel mainWindow)
     {
         MainWindow = mainWindow;
@@ -47,7 +49,6 @@ public class SettingsWindowViewModel : ViewModelBase
     public void ApplyChanges()
     {
         Settings.GlobalSettings = _settings.Clone() as Settings;
-        _isDirty = false;
     }
 
     public async void ChooseCoverPath()

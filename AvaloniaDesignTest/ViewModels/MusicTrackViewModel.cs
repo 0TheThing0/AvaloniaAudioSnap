@@ -5,11 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using AvaloniaDesignTest.Models.Settings;
@@ -20,7 +18,7 @@ using File = System.IO.File;
 
 namespace AvaloniaDesignTest.ViewModels;
 
-
+//This is terrible
 
 public class MusicTrackViewModel : ViewModelBase
 {
@@ -44,6 +42,7 @@ public class MusicTrackViewModel : ViewModelBase
         get => _fingerprint;
         set => this.RaiseAndSetIfChanged(ref _fingerprint, value);
     }
+    
     [JsonPropertyName("metadata-units")]
     public ObservableCollection<MetadataUnit> MetadataUnits { 
         get => _metadataUnits;
@@ -103,35 +102,51 @@ public class MusicTrackViewModel : ViewModelBase
         _coverPath = "";
     }
     
+    /// <summary>
+    /// Load cover from given url, is cannot load - load from file
+    /// </summary>
+    /// <param name="coverUrl">Url to cover</param>
     private async Task LoadCoverFromURI(string coverUrl)
     {
         IsLoadingCover = true;
+        
+        
         Cover = null;
-        //TODO: change sava method
         Uri uri = new Uri(
             coverUrl);
         _coverPath = uri.Segments.Last();
         
+        //Use cache file to save data
         string downloadPath =
             $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{_coverPath}";
+        
+        //if this file already exists - load from file
         if (!File.Exists(downloadPath))
         {
             if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.CoverPath))
             {
                 Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.CoverPath);
             }
+            
+            //Load file from uri
+            //TODO: Maybe redo with httpclient
             using (WebClient client = new WebClient())
             {
                 await client.DownloadFileTaskAsync(uri, downloadPath).ConfigureAwait(false);
             }
         }
 
-        //Should change file
+        //Load cover from downloaded file
         await LoadCoverFromFile();
+        
         IsLoadingCover = false;
     }
     
-    public async Task GetMetadata(JsonNode? node = null)
+    /// <summary>
+    /// Parse data from json into metadata
+    /// </summary>
+    /// <param name="node">Json node</param>
+    public void GetMetadata(JsonNode? node = null)
     {
         MetadataUnits.Clear();
         MetadataUnits.AddRange(MetadataSettings.GetMetadataUnits(_file.Tag, node));
@@ -139,48 +154,65 @@ public class MusicTrackViewModel : ViewModelBase
         Title = MetadataUnits.FirstOrDefault(x=>x.FieldName == "title",null);
     }
 
+    /// <summary>
+    ///  Create request to server and parse answer
+    /// </summary>
     public async Task SearchFileOnline()
     {
         //TODO: Server request
         var jsonstring = File.ReadAllText("testjson.json");
         JsonNode node = JsonNode.Parse(jsonstring);
-
-        await GetMetadata(node);
+        
         await LoadCoverFromURI("https://ia800201.us.archive.org/16/items/mbid-0875029f-362b-437a-aa84-0f9d6601730e/mbid-0875029f-362b-437a-aa84-0f9d6601730e-38463815033.png");
+        GetMetadata(node);
     }
 
+    /// <summary>
+    /// Set local image for pictures in track 
+    /// </summary>
     public async Task SetLocalImage()
     {
         IsLoadingCover = true;
+        
         var image = _file.Tag.Pictures.FirstOrDefault(x => x.Type == PictureType.FrontCover, null);
         if (image is not null)
         {
             using (var stream = new MemoryStream(image.Data.Data))
             {
-                Cover = await Task.Run(() => Bitmap.DecodeToWidth(stream, 500));
+                Cover = await Task.Run(() => Bitmap.DecodeToWidth(stream, Settings.GlobalSettings.RequestSettings.CoverSize));
             }
         }
         else
         {
             Cover = null;
         }
+        
         IsLoadingCover = false;
     }
     
+    /// <summary>
+    /// Analyze file (get local metadata and local image)
+    /// </summary>
     public async Task Analyze()
     {
-        await GetMetadata();
+        GetMetadata();
         await SetLocalImage();
     }
 
+    /// <summary>
+    /// Update file data after loading from history
+    /// </summary>
     public async Task ConfigureData()
     {
         _file = TagLib.File.Create(_filepath);
-        await UpdateOldValues();
+        UpdateOldValues();
         Artist = MetadataUnits.FirstOrDefault(x=>x.FieldName == "artists",null);
         Title = MetadataUnits.FirstOrDefault(x=>x.FieldName == "title",null);
     }
     
+    /// <summary>
+    /// Apply changes for every metadata
+    /// </summary>
     public async Task ApplyChanges()
     {
         foreach (var unit in MetadataUnits)
@@ -188,11 +220,12 @@ public class MusicTrackViewModel : ViewModelBase
             unit.ApplyChange(_file.Tag);
         }
 
+        //Loading cover from cache file and save it to music file
         string filepath =
             $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{_coverPath}";
+        
         if (_coverPath != "" && !IsLoadingCover && File.Exists(filepath))
         {
-            //TODO: redo
             Picture pic = new Picture()
             {
                 Type = PictureType.FrontCover,
@@ -202,13 +235,19 @@ public class MusicTrackViewModel : ViewModelBase
             _file.Tag.Pictures = new TagLib.IPicture[] { pic };
         }
 
+        //Saving metadata
         _coverPath = "";
         _file.Save();
-        await UpdateOldValues();
+        
+        //Updating view
+        UpdateOldValues();
         SetLocalImage().RunSynchronously();
     }
 
-    private async Task UpdateOldValues()
+    /// <summary>
+    /// Update associated properties
+    /// </summary>
+    private void UpdateOldValues()
     {
         foreach (var unit in MetadataUnits)
         {
@@ -217,18 +256,24 @@ public class MusicTrackViewModel : ViewModelBase
         }
     }
     
+    /// <summary>
+    /// Load cover from path (coverpath)
+    /// </summary>
     public async Task LoadCoverFromFile()
     {
         IsLoadingCover = true;
-        //Change
+        
+        
         string filepath =
             $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{_coverPath}";
+        
+        
         if (File.Exists(filepath))
         {
             var imageStream = await File.ReadAllBytesAsync(filepath);
             using (MemoryStream a = new MemoryStream(imageStream))
             {
-                Cover = await Task.Run(() => Bitmap.DecodeToWidth(a, 500));
+                Cover = await Task.Run(() => Bitmap.DecodeToWidth(a, Settings.GlobalSettings.RequestSettings.CoverSize));
 
             }
         }
@@ -236,9 +281,13 @@ public class MusicTrackViewModel : ViewModelBase
         {
             await SetLocalImage();
         }
+        
         IsLoadingCover = false;
     }
 
+    /// <summary>
+    /// Save track to history directory
+    /// </summary>
     public async Task SaveAsync()
     {
         if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.HistoryPath))
@@ -246,6 +295,8 @@ public class MusicTrackViewModel : ViewModelBase
             Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.HistoryPath);
         }
 
+        //if a file was loaded from history, a new file will not be created
+        //Otherwise new file will be created
         string filename;
         if (this._loadedFrom == "")
         {
@@ -260,21 +311,35 @@ public class MusicTrackViewModel : ViewModelBase
             filename = _loadedFrom;
         }
 
+        
         using (var fs = File.Create($"{Settings.GlobalSettings.GeneralSettings.HistoryPath}{Path.DirectorySeparatorChar}{filename}"))
         {
             await SaveToStreamAsync(this, fs);
         }
     }
+    
+    /// <summary>
+    /// Save musictrack to stream
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="stream"></param>
     private static async Task SaveToStreamAsync(MusicTrackViewModel data, Stream stream)
     {
         await JsonSerializer.SerializeAsync(stream, data);
     }
     
+    /// <summary>
+    /// Load musictrack from stream
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <returns></returns>
     public static async Task<MusicTrackViewModel> LoadFromStream(Stream stream)
     {
         return (await JsonSerializer.DeserializeAsync<MusicTrackViewModel>(stream).ConfigureAwait(false))!;
     }
 
+    
+    //Load files from history
     public static async Task<IEnumerable<MusicTrackViewModel>> LoadCachedAsync()
     {
         if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.HistoryPath))
@@ -284,6 +349,8 @@ public class MusicTrackViewModel : ViewModelBase
 
         var results = new List<MusicTrackViewModel>();
 
+        
+        //TODO: add sort and count
         foreach (var file in Directory.EnumerateFiles(Settings.GlobalSettings.GeneralSettings.HistoryPath))
         {
             if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;

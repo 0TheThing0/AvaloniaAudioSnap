@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reactive;
-using System.Threading;
-using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
-using AvaloniaDesignTest.Views;
 using Chromaprint;
 using ReactiveUI;
 
@@ -35,20 +31,20 @@ public class ResultWindowViewModel : ViewModelBase
 
     public async void ApplyChanges()
     {
-        Track.ApplyChanges();
+        await Track.ApplyChanges();
     }
 
     public async void SearchFileOnline()
     {
         await Track.SearchFileOnline();
     }
+    
     public async void Search(IStorageFile file)
     {
         FileChromaContext chromaContext = new FileChromaContext();
-        if (!chromaContext.ComputeFingerprint(file.Path.LocalPath))
+        if (!chromaContext.ComputeFingerprint(file.Path.LocalPath, 1000))
         {
             WrongInputCommand.Execute().Subscribe();
-            return;
         }
         else
         {

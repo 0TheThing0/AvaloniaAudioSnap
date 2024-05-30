@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using ReactiveUI;
-using Microsoft.Extensions.Configuration;
 using System.Reactive.Concurrency;
 using System.Text.Json;
 using AvaloniaDesignTest.Models.Settings;
-using Chromaprint;
-using TagLib;
 
 namespace AvaloniaDesignTest.ViewModels;
 
@@ -35,12 +29,26 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isSearch, value);
     } 
     
+     
+    public ViewModelBase CurrentViewModel
+    {
+        get => _currentViewModel;
+        set => this.RaiseAndSetIfChanged(ref _currentViewModel, value);
+    }
+
+    public Window Window
+    {
+        set => this.RaiseAndSetIfChanged(ref _window, value);
+    }
+    
     public MainWindowViewModel()
     {
+        //Creating base viewmodels
         _searchViewModel = new SearchWindowViewModel(this);
         _errorViewModel = new ErrorWindowViewModel(this);
         _libraryViewModel = new LibraryWindowViewModel(this);
-
+        
+        //Trying to read settings from appsettings file
         try
         {
             using (FileStream fs = new FileStream("appsettings.json", FileMode.OpenOrCreate))
@@ -53,31 +61,28 @@ public class MainWindowViewModel : ViewModelBase
         }
         catch
         {
-            
         }
+        
+        //Creating Settings viewmodel with new settings
         _settingsViewModel = new SettingsWindowViewModel(this);
 
+        
         _currentViewModel = _searchViewModel;
         
+        //Observing search command from different view models to choose file from other places
         Observable.Merge(
             _searchViewModel.SearchCommand,
             _errorViewModel.SearchCommand).Subscribe(
             _ =>
                 ChooseFile());
+        
+        //Adding to Schedule task to load history
         RxApp.MainThreadScheduler.Schedule(LoadTracks);
     }
     
-    public ViewModelBase CurrentViewModel
-    {
-        get => _currentViewModel;
-        set => this.RaiseAndSetIfChanged(ref _currentViewModel, value);
-    }
-
-    public Window Window
-    {
-        set => this.RaiseAndSetIfChanged(ref _window, value);
-    }
-    
+    /// <summary>
+    /// Method to show choose file dialog and call search this file to new result view model
+    /// </summary>
     public async void ChooseFile()
     {
         var files = await _window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
@@ -93,7 +98,11 @@ public class MainWindowViewModel : ViewModelBase
         
     }
 
-    public async Task<IStorageFolder> ChooseDir()
+    /// <summary>
+    ///  //Method to show choose directory dialog
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IStorageFolder?> ChooseDir()
     {
         var files = await  _window.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
         {
@@ -108,32 +117,40 @@ public class MainWindowViewModel : ViewModelBase
 
         return null;
     }
-    #region Change Window
     
+    /// <summary>
+    /// Method to create new resultViewModel add count fingerprint, metadata from file
+    /// </summary>
+    /// <param name="file"></param>
     public async Task SearchFile(IStorageFile file)
     {
         IsSearch = true;
-        
+
+        //Creating new result view model for new track
         CreateResultWindow();
-        if (_resultViewModel is not null)
+        await Task.Run(() => _resultViewModel.Search(file));
+        
+        //Adding this track to history
+        //TODO: redo adding
+        var track = _libraryViewModel.Tracks.FirstOrDefault(x => x.Filepath == _resultViewModel.Track.Filepath, null);
+        var trackPos = _libraryViewModel.Tracks.IndexOf(track);
+        if (trackPos != -1)
         {
-            await Task.Run(() => _resultViewModel.Search(file));
-            var track = _libraryViewModel.Tracks.FirstOrDefault(x => x.Filepath == _resultViewModel.Track.Filepath, null);
-            var trackPos = _libraryViewModel.Tracks.IndexOf(track);
-            if (trackPos != -1)
-            {
-                _resultViewModel.Track.LoadedFrom = track.LoadedFrom;
-                _libraryViewModel.Tracks[trackPos] = _resultViewModel.Track;
-            }
-            else
-            {
-                _libraryViewModel.Tracks.Add(_resultViewModel.Track);
-            }
+            _resultViewModel.Track.LoadedFrom = track.LoadedFrom;
+            _libraryViewModel.Tracks[trackPos] = _resultViewModel.Track;
         }
+        else
+        {
+            _libraryViewModel.Tracks.Add(_resultViewModel.Track);
+        }
+
 
         IsSearch = false;
     }
 
+    /// <summary>
+    /// Method to create new resultViewModel
+    /// </summary>
     private void CreateResultWindow()
     {
         _resultViewModel?.Track.SaveAsync();
@@ -143,44 +160,59 @@ public class MainWindowViewModel : ViewModelBase
         _resultViewModel.ShowResultCommand.Subscribe(_ => ShowResultWindow());
     }
     
+    /// <summary>
+    /// Method to save current track in resultViewModel
+    /// </summary>
     public void Save()
     {
         _resultViewModel?.Track.SaveAsync();
     }
     
+    /// <summary>
+    /// Method to show errorViewModel 
+    /// </summary>
     public void ShowErrorWindow()
     {
         CurrentViewModel = _errorViewModel;
     }
     
+    /// <summary>
+    /// Method to show resultViewModel
+    /// </summary>
     public async void ShowResultWindow()
     {
-        if (_resultViewModel != null)
-        {
-            CurrentViewModel = _resultViewModel;
-        }
-        else
-        {
-            CurrentViewModel = _searchViewModel;
-        }
+        CurrentViewModel = _resultViewModel is not null ? _resultViewModel : _searchViewModel;
     }
     
+    /// <summary>
+    /// Method to show searchViewModel
+    /// </summary>
     public void ShowSearchWindow()
     {
         CurrentViewModel = _searchViewModel;
     }
 
+    /// <summary>
+    /// Method to show settingsViewModel
+    /// </summary>
     public void ShowSettingsWindow()
     {
         //_settingsViewModel.CurrentSettings = Settings.GlobalSettings;
         CurrentViewModel = _settingsViewModel;
     }
 
+    /// <summary>
+    /// Method to show libraryViewModel
+    /// </summary>
     public void ShowLibraryWindow()
     {
         CurrentViewModel = _libraryViewModel;
     }
 
+    /// <summary>
+    /// Method to show resultViewModel based on track
+    /// </summary>
+    /// <param name="trackViewModel"></param>
     public void ShowResultWindow(MusicTrackViewModel? trackViewModel)
     {
         if (trackViewModel is not null)
@@ -190,10 +222,13 @@ public class MainWindowViewModel : ViewModelBase
         }
         ShowResultWindow();
     }
-    #endregion
     
+    /// <summary>
+    /// Method to load tracks from history directory (see settings)
+    /// </summary>
     private async void LoadTracks()
     {
+        //TODO: add in correct order with amount
         var tracks = await MusicTrackViewModel.LoadCachedAsync();
         foreach (var track in tracks)
         {

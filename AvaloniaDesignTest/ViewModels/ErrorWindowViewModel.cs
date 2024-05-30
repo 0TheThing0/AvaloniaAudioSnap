@@ -1,5 +1,4 @@
 ﻿using System.Reactive;
-using AvaloniaDesignTest.Views;
 using ReactiveUI;
 
 namespace AvaloniaDesignTest.ViewModels;

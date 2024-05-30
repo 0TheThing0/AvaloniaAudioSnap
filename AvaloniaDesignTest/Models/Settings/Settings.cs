@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace AvaloniaDesignTest.Models.Settings;
 
@@ -22,5 +25,18 @@ public class Settings : ICloneable
             RequestSettings = RequestSettings.Clone() as RequestSettings
         };
     }
-    
+
+
+    public async Task Save()
+    {
+        using (var fs = File.Create("appsettings.json"))
+        {
+            await SaveToStreamAsync(this, fs);
+        }
+    }
+
+    private static async Task SaveToStreamAsync(Settings obj, Stream stream)
+    {
+        await JsonSerializer.SerializeAsync(stream, obj);
+    }
 }

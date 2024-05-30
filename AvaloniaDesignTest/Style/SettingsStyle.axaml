@@ -1,0 +1,126 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+     <Style Selector="TabControl WrapPanel">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,300%">
+                        <GradientStop Color="#b39985" Offset="0" />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style Selector="TabControl">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,300%">
+                        <GradientStop Color="#85B399" Offset="0" />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Setter Property="Margin" Value="0 0 10 0"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        <Style Selector="TabItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="Black"/>
+
+        </Style>
+        
+        <Style Selector="TabItem:focus /template/ ContentPresenter#PART_ContentPresenter">
+        </Style>
+
+        <Style Selector="TabItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        
+        <Style Selector="TextBox.Path" >
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Background" Value="Azure"/>
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Padding" Value="20,0" />
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        
+        <Style Selector="Button.ChoosePath" >
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="40"/>
+            <Setter Property="Background" Value="#004445"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        
+        <Style Selector="TextBlock.Name" >
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Heavy"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        
+        <Style Selector="TextBlock.FieldSetting" >
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Heavy"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    
+    
+    <Style Selector="TextBox.Path:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Opacity" Value="1.0" /> 
+        <Setter Property="Background" Value="Gray"></Setter>
+    </Style>
+  
+    <Style Selector="TextBox.Path:focus-within /template/ Border#PART_BorderElement">
+        <Setter Property="Opacity" Value="1.0" /> 
+        <Setter Property="Background" Value="White"></Setter>
+    </Style>
+    
+    <Style Selector="NumericUpDown:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Opacity" Value="1.0" /> 
+        <Setter Property="Background" Value="Gray"></Setter>
+    </Style>
+  
+    <Style Selector="NumericUpDown">
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="Background" Value="Gray"></Setter>
+    </Style>
+    
+    <Style Selector="NumericUpDown:focus-within /template/ Border#PART_BorderElement">
+        <Setter Property="Opacity" Value="1.0" /> 
+        <Setter Property="Background" Value="White"></Setter>
+    </Style>
+    
+    <Style Selector="CheckBox">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Heavy"/>
+    </Style>
+</Styles>
