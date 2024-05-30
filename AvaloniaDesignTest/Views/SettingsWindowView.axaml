@@ -3,14 +3,304 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:AvaloniaDesignTest.Views"
+             xmlns:vm="clr-namespace:AvaloniaDesignTest.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
-             x:Class="AvaloniaDesignTest.Views.SettingsWindowView">
+             x:Class="AvaloniaDesignTest.Views.SettingsWindowView"
+             x:DataType="vm:SettingsWindowViewModel">
+   
+    <UserControl.Styles>
+        <Style Selector="TabControl WrapPanel">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,300%">
+                        <GradientStop Color="#b39985" Offset="0" />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style Selector="TabControl">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,300%">
+                        <GradientStop Color="#85B399" Offset="0" />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Setter Property="Margin" Value="0 0 10 0"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        <Style Selector="TabItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="Black"/>
+
+        </Style>
+        
+        <Style Selector="TabItem:focus /template/ ContentPresenter#PART_ContentPresenter">
+        </Style>
+
+        <Style Selector="TabItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        
+        <Style Selector="TextBox.Path" >
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="BorderThickness" Value="2" />
+
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Padding" Value="20,0" />
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        
+        <Style Selector="Button.ChoosePath" >
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="40"/>
+            <Setter Property="Background" Value="#004445"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        
+        <Style Selector="TextBlock.Name" >
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Heavy"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        
+        <Style Selector="TextBlock.FieldSetting" >
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Heavy"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </UserControl.Styles>
+        <DockPanel LastChildFill="True">
+            <Button Classes="ChoosePath" DockPanel.Dock="Bottom" Width="155" Height="40" HorizontalAlignment="Left"
+                    Margin="20,-60,0,0" ZIndex="1"
+                    Command="{Binding ApplyChanges}">Apply changes</Button>
+            <TabControl TabStripPlacement="Left"
+                        VerticalAlignment="Stretch"
+                        DockPanel.Dock="Top">
+                
+                <TabItem Header="General setting">
+                    <ScrollViewer>
+                        <StackPanel Margin="0,20,0,0" Spacing="7">
+                            <TextBlock Classes="Name"> Cover path </TextBlock>
+                            <Grid ColumnDefinitions="4*,2*">
+                                <TextBox Grid.Column="0" Classes="Path"
+                                         Text="{Binding CoverPath}"></TextBox>
+                                <Button Grid.Column="1" Classes="ChoosePath"
+                                        Command="{Binding ChooseCoverPath}">Choose directory</Button>
+                            </Grid>
+                            
+                            <TextBlock Classes="Name"> History path </TextBlock>
+                            <Grid ColumnDefinitions="4*,2*">
+                                <TextBox Grid.Column="0" Classes="Path"
+                                         Text="{Binding HistoryPath}"></TextBox>
+                                <Button Grid.Column="1" Classes="ChoosePath"
+                                        Command="{Binding ChooseHistoryPath}">Choose directory</Button>
+                            </Grid>
+                            
+                            <TextBlock Classes="Name"> History size </TextBlock>
+                            <NumericUpDown Value="{Binding CurrentSettings.GeneralSettings.HistorySize}"
+                                           Maximum="100" Minimum="1"
+                                           FormatString="0" 
+                                           CornerRadius="20,0,0,20"
+                                           />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                    
+                <TabItem Header="Request settings">
+                    <ScrollViewer>
+                        <StackPanel Margin="0,10,0,20" Spacing="7" x:Name="Panel">
+                            
+                            <TextBlock Classes="Name"> Host address </TextBlock>
+                            <TextBox  Classes="Path"
+                                     Text="{Binding CurrentSettings.RequestSettings.HostAddress}"/>
+                            
+                            
+                            
+                            <Grid ColumnDefinitions="3*,1*">
+                                <TextBlock Grid.Column="0" Classes="Name">Host port</TextBlock>
+                                <NumericUpDown Grid.Column="1" Value="{Binding CurrentSettings.RequestSettings.HostPort}"
+                                               Maximum="65535" Minimum="0"
+                                               Increment="1"
+                                               FormatString="0"
+                                               CornerRadius="20,0,0,20"
+                                />
+                                
+                            </Grid>
+                            
+                            <Grid ColumnDefinitions="3*,1*">
+                                <TextBlock Grid.Column="0" Classes="Name">Matching rate</TextBlock>
+                                <NumericUpDown Grid.Column="1" Value="{Binding CurrentSettings.RequestSettings.MatchingRate}"
+                                               Maximum="100" Minimum="1"
+                                               Increment="1"
+                                               FormatString="0"
+                                               CornerRadius="20,0,0,20"
+                                />
+                                
+                            </Grid>
+                            
+                            <CheckBox Margin="0,25,0,0"
+                                IsChecked="{Binding CurrentSettings.RequestSettings.Cover}">Load cover</CheckBox>
+                            
+                            
+                            <Grid ColumnDefinitions="3*,1*">
+                                <TextBlock Grid.Column="0" Classes="Name">Max cover size (px)</TextBlock>
+                                <NumericUpDown Grid.Column="1" Value="{Binding CurrentSettings.RequestSettings.CoverSize}"
+                                               Maximum="1200" Minimum="250"
+                                               Increment="50"
+                                               FormatString="0"
+                                               CornerRadius="20,0,0,20"
+                                />
+                            </Grid>
+                            
+                            <TextBlock Classes="Name" Margin="0,25,0,0"> Release format </TextBlock>
+                            <Border BorderBrush="Gray" BorderThickness="2" CornerRadius="20"
+                                    Background="DarkGray" Padding="5">
+                                <Grid RowDefinitions="1*,1*,1*,1*,1*,1*"
+                                      ColumnDefinitions="1*,1*,1*">
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="0" Grid.Column="0" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Album</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Album}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="1" Grid.Column="0" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Single</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Single}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="2" Grid.Column="0" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">EP</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.EP}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="3" Grid.Column="0" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Other</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Other}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="4" Grid.Column="0" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Broadcast</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Broadcast}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="5" Grid.Column="0" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Audio drama</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.AudioDrama}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="0" Grid.Column="1" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Audiobook</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Audiobook}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="1" Grid.Column="1" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Compilation</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Compilation}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="2" Grid.Column="1" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">DJ-mix</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.DjMix}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="3" Grid.Column="1" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Demo</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Demo}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="4" Grid.Column="1" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Field recording</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.FieldRecording}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="5" Grid.Column="1" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Interview</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Interview}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="0" Grid.Column="2" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Live</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Live}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="1" Grid.Column="2" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Mixtape/Street</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Mixtape}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="2" Grid.Column="2" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Remix</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Remix}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="3" Grid.Column="2" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Soundtrack</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Soundtrack}"/>
+                                    </Grid>
+                                    
+                                    <Grid ColumnDefinitions="3*,5*" Grid.Row="4" Grid.Column="2" >
+                                        <TextBlock Grid.Column="0" Classes="FieldSetting">Album</TextBlock>
+                                        <Slider Grid.Column="1" Minimum="0" Maximum="100"
+                                                Value="{Binding CurrentSettings.RequestSettings.ReleaseFormatSettings.Spokenword}"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                           
+                            <TextBlock Classes="Name" Margin="0,25,0,0"> Observing metadata </TextBlock>
+                            <Grid ColumnDefinitions="1*,1*,1*">
+                                <TextBox x:Name="Metadata" Grid.Column="0" Classes="Path"></TextBox>
+                                <Button Grid.Column="1" Classes="ChoosePath" Click="Add_OnClick">Add</Button>
+                                <Button Grid.Column="2" Classes="ChoosePath" Click="Remove_OnClick">Remove</Button>
+                            </Grid>
+                            <ListBox ItemsSource="{Binding CurrentSettings.RequestSettings.ObservingMetadata}"
+                                     x:Name = "ListBox"
+                                     CornerRadius="20" MaxHeight="300" MinHeight="50"
+                            />
+                            
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+            
+        </DockPanel>
     
-    <StackPanel Spacing="20" Margin="30">
-        <TextBlock HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="30" FontWeight="ExtraBold">Settings</TextBlock>
-        <ListBox>
-        </ListBox>
-    </StackPanel>
 </UserControl>

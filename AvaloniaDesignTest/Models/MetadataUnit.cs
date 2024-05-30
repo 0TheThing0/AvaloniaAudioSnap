@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using AvaloniaDesignTest.Models.Settings;
 using ReactiveUI;
 using TagLib;
 
@@ -48,10 +49,11 @@ public class MetadataUnit : ReactiveObject
     {
         Property = property;
         Name = name;
-        if (MetadataSettings.GlobalSettings.MetadataNameParity.ContainsKey(name))
+        if (Settings.GlobalSettings.GeneralSettings.MetadataNameParity.TryGetValue(name, out var value))
         {
-            Name = MetadataSettings.GlobalSettings.MetadataNameParity[name];
+            Name = value;
         }
+        
         FieldName = name;
         OldValue = oldValue;
         NewValue = newValue;
@@ -68,9 +70,9 @@ public class MetadataUnit : ReactiveObject
         MetadataSettings.TagFieldParity.TryGetValue(FieldName,out _property);
         
         Name = FieldName;
-        if (MetadataSettings.GlobalSettings.MetadataNameParity.ContainsKey(FieldName))
+        if (Settings.GlobalSettings.GeneralSettings.MetadataNameParity.TryGetValue(FieldName, out var value))
         {
-            Name = MetadataSettings.GlobalSettings.MetadataNameParity[FieldName];
+            Name = value;
         }
         
         if (_property == null || !_property.CanWrite || !_property.CanRead)

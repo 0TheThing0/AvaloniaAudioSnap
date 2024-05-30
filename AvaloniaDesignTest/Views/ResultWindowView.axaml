@@ -30,17 +30,20 @@
                   HorizontalAlignment="Stretch">
                 <Button Grid.Row="1"
                         Command="{Binding SearchCommand}"
-                        IsEnabled="{Binding !MainWindow.IsSearch}">
+                        IsEnabled="{Binding !MainWindow.IsSearch}"
+                        Foreground="White">
                     Search more
                 </Button>
                 <Button Grid.Row="3"
                         Command="{Binding ApplyChanges}"
-                        IsEnabled="{Binding !MainWindow.IsSearch}">
+                        IsEnabled="{Binding !MainWindow.IsSearch}"
+                        Foreground="White">
                     Apply changes
                 </Button>
                 <Button Grid.Row="5"
                         Command="{Binding SearchFileOnline}"
-                        IsEnabled="{Binding !MainWindow.IsSearch}">
+                        IsEnabled="{Binding !MainWindow.IsSearch}"
+                        Foreground="White">
                     Search track online
                 </Button>
             </Grid>
@@ -87,6 +90,7 @@
                                        <TextBox Grid.Column="1" Classes="ItemResource"
                                                 ZIndex="1"
                                                 Background="#F5F5F5"
+                                                Foreground="Black"
                                                 Text="{Binding OldValue}"
                                                 IsReadOnly="True">
                                        </TextBox>
@@ -94,6 +98,7 @@
                                                  ZIndex="0"
                                                  Background="#D9D9D9"
                                                  CornerRadius="0"
+                                                 Foreground="Black"
                                                  BorderThickness="2,2,0,2"
                                                  Text="{Binding NewValue}">
                                         </TextBox>

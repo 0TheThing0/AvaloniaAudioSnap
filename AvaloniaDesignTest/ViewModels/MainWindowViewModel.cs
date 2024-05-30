@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ using Avalonia.Platform.Storage;
 using ReactiveUI;
 using Microsoft.Extensions.Configuration;
 using System.Reactive.Concurrency;
+using System.Text.Json;
+using AvaloniaDesignTest.Models.Settings;
 using Chromaprint;
 using TagLib;
 
@@ -36,12 +39,23 @@ public class MainWindowViewModel : ViewModelBase
     {
         _searchViewModel = new SearchWindowViewModel(this);
         _errorViewModel = new ErrorWindowViewModel(this);
-        _settingsViewModel = new SettingsWindowViewModel(this);
         _libraryViewModel = new LibraryWindowViewModel(this);
-        
-        var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-        var config = builder.Build();
-        var res=config.GetRequiredSection("Hello").Get<MetadataSettings>();
+
+        try
+        {
+            using (FileStream fs = new FileStream("appsettings.json", FileMode.OpenOrCreate))
+            {
+                var settings = JsonSerializer.Deserialize<Settings>(fs);
+                if (settings!=null)
+                    Settings.GlobalSettings = settings;
+            }
+            
+        }
+        catch
+        {
+            
+        }
+        _settingsViewModel = new SettingsWindowViewModel(this);
 
         _currentViewModel = _searchViewModel;
         
@@ -56,10 +70,7 @@ public class MainWindowViewModel : ViewModelBase
     public ViewModelBase CurrentViewModel
     {
         get => _currentViewModel;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _currentViewModel, value);
-        }
+        set => this.RaiseAndSetIfChanged(ref _currentViewModel, value);
     }
 
     public Window Window
@@ -75,12 +86,28 @@ public class MainWindowViewModel : ViewModelBase
             AllowMultiple = false
         });
 
-        if (files.Count >= 1)
+        if (files.Count == 1)
         {
             await SearchFile(files.First());
         }
+        
     }
 
+    public async Task<IStorageFolder> ChooseDir()
+    {
+        var files = await  _window.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+        {
+            Title = "Open folder",
+            AllowMultiple = false
+        });
+
+        if (files.Count == 1)
+        {
+            return files.First();
+        }
+
+        return null;
+    }
     #region Change Window
     
     public async Task SearchFile(IStorageFile file)
@@ -90,11 +117,9 @@ public class MainWindowViewModel : ViewModelBase
         CreateResultWindow();
         if (_resultViewModel is not null)
         {
-            var r = Task.Run(() => _resultViewModel.Search(file));
-            await r;
+            await Task.Run(() => _resultViewModel.Search(file));
             var track = _libraryViewModel.Tracks.FirstOrDefault(x => x.Filepath == _resultViewModel.Track.Filepath, null);
-            var trackPos = _libraryViewModel.Tracks.IndexOf(
-                track);
+            var trackPos = _libraryViewModel.Tracks.IndexOf(track);
             if (trackPos != -1)
             {
                 _resultViewModel.Track.LoadedFrom = track.LoadedFrom;
@@ -147,6 +172,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public void ShowSettingsWindow()
     {
+        //_settingsViewModel.CurrentSettings = Settings.GlobalSettings;
         CurrentViewModel = _settingsViewModel;
     }
 

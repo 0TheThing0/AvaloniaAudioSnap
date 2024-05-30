@@ -11,8 +11,7 @@
                     Background="Transparent"
                     Padding="0">
                 <Button.Content>
-                    <Image Stretch="Uniform"
-                           Source="C:/Users/Илья/Desktop/image 1.png"/>
+                    <Image Stretch="Uniform"/>
                 </Button.Content>
             </Button>
 

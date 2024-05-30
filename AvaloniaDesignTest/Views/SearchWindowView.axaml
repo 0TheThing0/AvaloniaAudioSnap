@@ -10,7 +10,8 @@
     
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
                 Spacing="20">
-        <TextBlock FontSize="62" FontWeight="ExtraBold">
+        <TextBlock FontSize="62" FontWeight="ExtraBold"
+                   Foreground="Black">
             Let's Explore!
         </TextBlock>
         <Button CornerRadius="40"

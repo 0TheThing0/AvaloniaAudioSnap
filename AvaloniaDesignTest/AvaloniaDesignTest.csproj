@@ -36,11 +36,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="D:\Всякое\Учёба\Chromaprint\Chromaprint\Chromaprint.csproj" />
+      <None Remove="Style\TextBox.xaml" />
+      <AvaloniaXaml Include="Style\TextBox.xaml" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Style\TextBox.xaml" />
-      <AvaloniaXaml Include="Style\TextBox.xaml" />
+      <ProjectReference Include="..\..\Chromaprint_lib\Chromaprint.csproj" />
     </ItemGroup>
 </Project>

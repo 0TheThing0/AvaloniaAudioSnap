@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Nodes;
+using AvaloniaDesignTest.Models.Settings;
 using AvaloniaDesignTest.Web;
 using TagLib;
 
@@ -9,34 +10,6 @@ namespace AvaloniaDesignTest.ViewModels;
 
 public class MetadataSettings
 {
-    public static MetadataSettings GlobalSettings = new MetadataSettings();
-
-    public List<string> ObservingMetadata { get; set; } = new List<string>()
-    {
-        "album",
-        "album-artists",
-        "album-artists-sort",
-        "artists",
-        "disc",
-        "disc-count",
-        "first-album-artist",
-        "first-album-artist-sort",
-        "first-artist",
-        "genres",
-        "first-genre",
-        "isrc",
-        "length",
-        "music-brainz-artist-id",
-        "music-brainz-disc-id",
-        "music-brainz-release-id",
-        "music-brainz-release-status",
-        "music-brainz-track-id",
-        "track",
-        "track-count",
-        "title",
-        "year"
-    };
-
     public static readonly Dictionary<string, PropertyInfo> TagFieldParity =
         new Dictionary<string, PropertyInfo>()
         {
@@ -59,17 +32,12 @@ public class MetadataSettings
             {"title", typeof(Tag).GetProperty("Title")},
             {"year", typeof(Tag).GetProperty("Year")},
         };
-
-    public Dictionary<string, string> MetadataNameParity { get; set; } = new Dictionary<string, string>()
-    {
-
-    };
     
-    public IEnumerable<MetadataUnit> GetMetadataUnits(Tag fileMetadata,JsonNode? node)
+    public static IEnumerable<MetadataUnit> GetMetadataUnits(Tag fileMetadata,JsonNode? node)
     {
         List<MetadataUnit> metadatas = new List<MetadataUnit>();
 
-        foreach (var metadata in ObservingMetadata)
+        foreach (var metadata in Settings.GlobalSettings.RequestSettings.ObservingMetadata)
         {
             //Getting property of the metadata
             PropertyInfo? property= null;
@@ -91,7 +59,6 @@ public class MetadataSettings
             {
 
             }
-            
             //Getting new value
             //TODO: Looks very bad
             string newValue = "";
@@ -100,7 +67,6 @@ public class MetadataSettings
                 newValue = MetadataUnit.ConvertToString(node?[metadata]);
             }
             catch {}
-
             //Setting new metadata
             metadatas.Add(new MetadataUnit(name,oldValue,newValue,property));
         }

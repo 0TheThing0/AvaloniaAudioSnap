@@ -255,6 +255,11 @@
     <Setter Property="Background" Value="Gray"></Setter>
   </Style>
   
+  <Style Selector="TextBox.ItemResource:focus-within /template/ Border#PART_BorderElement, TextBox.Name:focus-within /template/ Border#PART_BorderElement">
+    <Setter Property="Opacity" Value="1.0" /> 
+    <Setter Property="Background" Value="White"></Setter>
+  </Style>
+  
   <Style Selector="TextBox.Name:pointerover /template/ Border#PART_BorderElement">
     <Setter Property="Opacity" Value="1.0" /> 
     <Setter Property="Background" Value="SeaGreen"></Setter>

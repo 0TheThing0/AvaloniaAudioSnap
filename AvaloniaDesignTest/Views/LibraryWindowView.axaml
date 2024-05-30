@@ -12,7 +12,8 @@
     <Grid Margin="30,30,30,0" RowDefinitions="Auto,1*" >
         <TextBlock Grid.Row="0" HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   FontSize="30" FontWeight="ExtraBold">My searches</TextBlock>
+                   FontSize="30" FontWeight="ExtraBold"
+                   Foreground="Black">My searches</TextBlock>
             <ListBox x:Name = "ListBox" 
                     Grid.Row="1" ItemsSource="{Binding  Tracks}"
                      Background="Transparent"
@@ -57,9 +58,9 @@
                                         </Panel>
                                     </Panel> 
                                 </Border>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding Title.OldValue}">
+                                <TextBlock HorizontalAlignment="Center" Foreground="Black" Text="{Binding Title.OldValue}">
                                 </TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding Artist.OldValue}"/>
+                                <TextBlock HorizontalAlignment="Center" Foreground="Black" Text="{Binding Artist.OldValue}"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

@@ -3,7 +3,6 @@
         xmlns:vm="using:AvaloniaDesignTest.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:AvaloniaDesignTest.Views"
         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
         Width = "900" Height = "600"
         x:Class="AvaloniaDesignTest.Views.MainWindow"
@@ -27,6 +26,7 @@
         
         <Style Selector="Button.Toolbar:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="#e1f7e7" />
+            <Setter Property="Foreground" Value="Black" />
             <Setter Property="BorderBrush" Value="Black"/>
             <Setter Property="BorderThickness" Value="0,0.5,1,0.5"/>
         </Style>
