@@ -13,9 +13,17 @@
         </UserControl.Styles>
     
         <DockPanel LastChildFill="True">
-            <Button Classes="ChoosePath" DockPanel.Dock="Bottom" Width="155" Height="40" HorizontalAlignment="Left"
-                    Margin="20,-60,0,0" ZIndex="1"
-                    Command="{Binding ApplyChanges}">Apply changes</Button>
+            <StackPanel DockPanel.Dock="Bottom" Margin="20,-80,0,0" ZIndex="1">
+                <TextBlock Foreground="#A82F2F"
+                           HorizontalAlignment="Left"
+                           Margin="3,0,0,0"
+                           IsVisible="{Binding IsDirty}">
+                    Settings are not applied!
+                </TextBlock>
+                <Button Classes="ChoosePath"  Width="155" Height="40" HorizontalAlignment="Left"
+                        Command="{Binding ApplyChanges}"
+                        IsEnabled="{Binding IsDirty}">Apply changes</Button> 
+            </StackPanel>
             <TabControl TabStripPlacement="Left"
                         VerticalAlignment="Stretch"
                         DockPanel.Dock="Top">

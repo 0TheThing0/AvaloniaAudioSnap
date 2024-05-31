@@ -28,9 +28,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _isSearch;
         set => this.RaiseAndSetIfChanged(ref _isSearch, value);
+    }
+
+    public SettingsWindowViewModel SettingsViewModel
+    {
+        get => _settingsViewModel;
     } 
-    
-     
     public ViewModelBase CurrentViewModel
     {
         get => _currentViewModel;
@@ -56,8 +59,11 @@ public class MainWindowViewModel : ViewModelBase
             {
                 var des = new DataContractJsonSerializer(typeof(Settings));
                 var settings = des.ReadObject(fs) as Settings;
-                if (settings!=null)
+                if (settings != null)
+                {
+                    settings = (Settings)settings.Clone();
                     Settings.GlobalSettings = settings;
+                }
             }
             
         }

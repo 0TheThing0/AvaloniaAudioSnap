@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Reactive;
+using System.Reactive.Linq;
 using AvaloniaDesignTest.Models.Settings;
+using DynamicData.Binding;
 using ReactiveUI;
 
 namespace AvaloniaDesignTest.ViewModels;
@@ -7,6 +13,13 @@ namespace AvaloniaDesignTest.ViewModels;
 //That is so BAD
 public class SettingsWindowViewModel : ViewModelBase
 {
+    private bool _isDirty;
+
+    public bool IsDirty
+    {
+        get => _isDirty;
+        set => this.RaiseAndSetIfChanged(ref _isDirty, value);
+    }
     public Settings CurrentSettings
     {
         get => _settings;
@@ -45,17 +58,35 @@ public class SettingsWindowViewModel : ViewModelBase
         _settings = Settings.GlobalSettings.Clone() as Settings;
         _coverPath = Settings.GlobalSettings.GeneralSettings.CoverPath;
         _historyPath = Settings.GlobalSettings.GeneralSettings.HistoryPath;
-        //CurrentSettings.WhenAnyValue(x => x.GeneralSettings.CoverPath).Subscribe(_ => Test());
+        CurrentSettings.WhenAnyPropertyChanged(nameof(Settings.GlobalSettings));
+
+        Observable.Merge(
+            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                handler => _settings.RequestSettings.PropertyChanged += handler,
+                handler => _settings.RequestSettings.PropertyChanged -= handler
+            ),
+            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                handler => _settings.RequestSettings.ReleaseFormatSettings.PropertyChanged += handler,
+                handler => _settings.RequestSettings.ReleaseFormatSettings.PropertyChanged -= handler
+            ),
+            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                handler => _settings.GeneralSettings.PropertyChanged += handler,
+                handler => _settings.GeneralSettings.PropertyChanged -= handler
+            )
+
+        ).Subscribe(_ => SettingsChange());
     }
 
-    public void Test()
+    public void SettingsChange()
     {
-        
+        IsDirty = true;
     }
     
-    public void ApplyChanges()
+    public async void ApplyChanges()
     {
         Settings.GlobalSettings = _settings.Clone() as Settings;
+        await Settings.GlobalSettings?.Save();
+        IsDirty = false;
     }
 
     public async void ChooseCoverPath()
@@ -82,6 +113,7 @@ public class SettingsWindowViewModel : ViewModelBase
         {
             CurrentSettings.RequestSettings.ObservingMetadata.Add(value);
         }
+        SettingsChange();
     }
     
     public void RemoveMetadata(int index)
@@ -89,6 +121,7 @@ public class SettingsWindowViewModel : ViewModelBase
         try
         {
             CurrentSettings.RequestSettings.ObservingMetadata.RemoveAt(index);
+            SettingsChange();
         }
         catch
         {

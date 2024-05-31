@@ -16,11 +16,18 @@ public class Settings : ReactiveObject, ICloneable
     
     public static Settings GlobalSettings = new Settings();
 
+
+    private GeneralSettings _generalSettings =  new GeneralSettings();
+    private RequestSettings _requestSettings = new RequestSettings();
     [DataMember(Name="general-settings")] 
-    public GeneralSettings GeneralSettings { get; set; } = new GeneralSettings();
+    public GeneralSettings GeneralSettings {
+        get => _generalSettings;
+        set => this.RaiseAndSetIfChanged(ref _generalSettings,value); } 
 
     [DataMember(Name="request-settings")]
-    public RequestSettings RequestSettings { get; set; } = new RequestSettings();
+    public RequestSettings RequestSettings{
+        get => _requestSettings;
+        set => this.RaiseAndSetIfChanged(ref _requestSettings,value); } 
     
     public object Clone()
     {
