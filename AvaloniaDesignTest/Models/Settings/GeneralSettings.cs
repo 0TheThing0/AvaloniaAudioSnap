@@ -31,11 +31,17 @@ public class GeneralSettings : ReactiveObject, ICloneable
     }  
 
     [DataMember(Name="history-size")] 
-    public int HistorySize  {
+    public int HistorySize
+    {
         get => _historySize;
-        set => this.RaiseAndSetIfChanged(ref _historySize,value);
+        set
+        {
+            value = Math.Min(value, 100);
+            value = Math.Max(value, 1);
+            this.RaiseAndSetIfChanged(ref _historySize, value);
+        }
     }
-    
+
     [DataMember(Name="name-parity")]
     public Dictionary<string, string> MetadataNameParity  {
         get => _metadataNameParity;

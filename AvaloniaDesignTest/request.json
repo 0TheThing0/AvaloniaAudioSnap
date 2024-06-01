@@ -1,18 +1,22 @@
 ﻿{
   "fingerprint" : "fsdfdsg25252323dgdfgdfgsfsdf",
   "duration" : 245,
+  "matching-rate" : 0.7,
+  "cover" : true,
+  "cover-size" : 500,
+  "external-links" : true,
   "priorities" : {
-      "release-format" : [
-        {"album" :  1.0},
-        {"single" : 1.0}
-      ],
-      "release-country" : [
-        "XW","BLR"
-      ]
+    "release-format" : [
+      {"album" :  100},
+      {"single" : 100}
+    ],
+    "release-country" : [
+      "XW","BLR"
+    ]
   },
   "release-properties" : [
     "album",
     "title",
     "artists"
-  ] 
+  ]
 }

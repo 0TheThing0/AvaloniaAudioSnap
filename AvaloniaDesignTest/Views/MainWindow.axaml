@@ -15,7 +15,10 @@
 
     <Window.Resources>
         <conv:ColorConverter x:Key="ColorConverter" />
+        <conv:TypeConverter x:Key="TypeConverter" />
+        <conv:NameConverter x:Key="NameConverter" />
     </Window.Resources>
+    
     <Window.Styles>
         <Style Selector="Button.Toolbar" >
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -34,46 +37,96 @@
             <Setter Property="BorderBrush" Value="Black"/>
             <Setter Property="BorderThickness" Value="0,0.5,1,0.5"/>
         </Style>
+        
+        <Style Selector="Border.Popup">
+            <Style.Animations>
+                <Animation Duration="0:0:5" IterationCount="1" >
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="TranslateTransform.X" Value="100"/>
+                    </KeyFrame>
+                    <KeyFrame Cue="6%">
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="TranslateTransform.X" Value="0"/>
+                    </KeyFrame>
+                    
+                    <KeyFrame Cue="90%">
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="TranslateTransform.X" Value="0"/>
+                    </KeyFrame>
+                    
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="TranslateTransform.X" Value="100"/>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+            
+        </Style>
     </Window.Styles>
     
-    <Grid RowDefinitions="Auto,8*">
-        <!--Toolbar-->
-        <Grid Grid.Background = "#E2E8E4"
-              Grid.Row = "0" Height="50"
-              ColumnDefinitions="3*,1*">
-            <!--Buttons-->
-            <Grid Grid.Column="0" 
-                  ColumnDefinitions="Auto,Auto,Auto">
-                <Button Grid.Column="0" Classes="Toolbar"
-                        ZIndex="2"
-                        Background="#004445"
-                        Content="Search"
-                        Command="{Binding ShowResultWindow}"></Button>
-                <Button Grid.Column="1" Classes="Toolbar"
-                        ZIndex="1"
-                        Content="History"
-                        Background="#287873"
-                        Command="{Binding ShowLibraryWindow}">
-                </Button>
-                <Button Grid.Column="2" Classes="Toolbar"
-                        ZIndex="0"
-                        Background="{Binding SettingsViewModel.IsDirty,
-                        Converter={StaticResource ColorConverter}} " Content="Settings"
-                        Command="{Binding ShowSettingsWindow}"></Button>
+    <Grid>
+        <Grid RowDefinitions="Auto,8*">
+            <!--Toolbar-->
+            <Grid Grid.Background = "#E2E8E4"
+                  Grid.Row = "0" Height="50"
+                  ColumnDefinitions="3*,1*">
+                <!--Buttons-->
+                <Grid Grid.Column="0" 
+                      ColumnDefinitions="Auto,Auto,Auto">
+                    <Button Grid.Column="0" Classes="Toolbar"
+                            ZIndex="2"
+                            Background="#004445"
+                            Content="Search"
+                            Command="{Binding ShowResultWindow}"></Button>
+                    <Button Grid.Column="1" Classes="Toolbar"
+                            ZIndex="1"
+                            Content="History"
+                            Background="#287873"
+                            Command="{Binding ShowLibraryWindow}">
+                    </Button>
+                    <Button Grid.Column="2" Classes="Toolbar"
+                            ZIndex="0"
+                            Background="{Binding SettingsViewModel.IsDirty,
+                            Converter={StaticResource ColorConverter}} " Content="Settings"
+                            Command="{Binding ShowSettingsWindow}"></Button>
+                </Grid>
+                
+                <!--Logo-->
+                <Rectangle Grid.Column = "1" Fill="Red" ></Rectangle>
             </Grid>
             
-            <!--Logo-->
-            <Rectangle Grid.Column = "1" Fill="Red" ></Rectangle>
+            <UserControl Grid.Row="1" Content="{Binding CurrentViewModel}">
+                <UserControl.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,300%">
+                        <GradientStop Color="#85B399" Offset="0" />
+                        <GradientStop Color="Black" Offset="1" />
+                    </LinearGradientBrush>
+                </UserControl.Background>
+            </UserControl>
         </Grid>
         
-        <UserControl Grid.Row="1" Content="{Binding CurrentViewModel}">
-            <UserControl.Background>
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,300%">
-                    <GradientStop Color="#85B399" Offset="0" />
-                    <GradientStop Color="Black" Offset="1" />
-                </LinearGradientBrush>
-            </UserControl.Background>
-        </UserControl>
+        <!--Notification--> 
+        <Grid ColumnDefinitions="3*,1*">
+            <ListBox Grid.Column="1" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                     IsEnabled="False" ItemsSource="{Binding Messages}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="DimGray" BorderBrush="Black" BorderThickness="2"
+                                CornerRadius="10" Classes="Popup" Padding="4">
+                            <StackPanel MinHeight="50" HorizontalAlignment="Stretch">
+                                <Label HorizontalAlignment="Center"
+                                       Foreground="{Binding MessageType, Converter={StaticResource TypeConverter}}"
+                                       FontSize="18" Content="{Binding MessageType, Converter={StaticResource NameConverter}}"></Label>
+                                <SelectableTextBlock 
+                                    TextWrapping="Wrap"
+                                    Foreground="White"
+                                    FontSize="14" Text="{Binding Message}"></SelectableTextBlock>
+                            </StackPanel> 
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
-
 </Window>

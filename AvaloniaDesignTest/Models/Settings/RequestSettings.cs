@@ -12,10 +12,11 @@ namespace AvaloniaDesignTest.Models.Settings;
 public class RequestSettings : ReactiveObject,ICloneable
 {
     private bool _cover = true;
+    private bool _links = true;
     private int _coverSize = 500;
     private string _hostAddress = "musicbrainz.org";
     private int _hostPort = 443;
-    private int _matchingRate = 70;
+    private double _matchingRate = 0.5;
     private FormatSettings _releaseFormatSettings = new FormatSettings();
     
     [DataMember(Name="observing-metadata")]
@@ -54,16 +55,36 @@ public class RequestSettings : ReactiveObject,ICloneable
     }  
     
     [DataMember(Name="cover")] 
-    public bool Cover {
+    public bool Cover
+    {
         get => _cover;
-        set => this.RaiseAndSetIfChanged(ref _cover,value);
-    }  
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _cover, value);
+        }
+    }
+    
+    [DataMember(Name="external-links")] 
+    public bool ExternalLinks
+    {
+        get => _links;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _links, value);
+        }
+    }
 
     [DataMember(Name="cover-size")] 
-    public int CoverSize {
+    public int CoverSize
+    {
         get => _coverSize;
-        set => this.RaiseAndSetIfChanged(ref _coverSize,value);
-    }  
+        set
+        {
+            value = Math.Min(1200, value);
+            value = Math.Max(250, value);
+            this.RaiseAndSetIfChanged(ref _coverSize, value);
+        }
+    }
 
     [DataMember(Name="host-address")] 
     public string HostAddress {
@@ -71,16 +92,27 @@ public class RequestSettings : ReactiveObject,ICloneable
         set => this.RaiseAndSetIfChanged(ref _hostAddress,value);
     }  
     [DataMember(Name="host-port")] 
-    public int HostPort {
+    public int HostPort
+    {
         get => _hostPort;
-        set => this.RaiseAndSetIfChanged(ref _hostPort,value);
-    }  
+        set
+        {
+            value = Math.Min(65535, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _hostPort, value);
+        }
+    }
 
     [DataMember(Name="matching-rate")]
-    public int MatchingRate
+    public double MatchingRate
     {
         get => _matchingRate;
-        set => this.RaiseAndSetIfChanged(ref _matchingRate,value);
+        set
+        {
+            value = Math.Min(1, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _matchingRate, value);
+        }
     }
 
     public RequestSettings()

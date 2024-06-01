@@ -32,9 +32,7 @@ public class MusicTrackViewModel : ViewModelBase
     private bool _isLoadingCover = false;
     private MusicTrack _musicTrack;
     
-    public MusicTrackViewModel()
-    {
-    }
+
     public MusicTrackViewModel(string path, string fingerprint)
     {
         _musicTrack = new MusicTrack(path, fingerprint);
@@ -53,7 +51,6 @@ public class MusicTrackViewModel : ViewModelBase
     {
         IsLoadingCover = true;
         
-        
         Track.Cover = null;
         Uri uri = new Uri(
             coverUrl);
@@ -66,17 +63,19 @@ public class MusicTrackViewModel : ViewModelBase
         //if this file already exists - load from file
         if (!File.Exists(downloadPath))
         {
-            if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.CoverPath))
-            {
-                Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.CoverPath);
-            }
+                if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.CoverPath))
+                {
+                    Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.CoverPath);
+                }
+
+
+                //Load file from uri
+                //TODO: Maybe redo with httpclient
+                using (WebClient client = new WebClient())
+                {
+                    await client.DownloadFileTaskAsync(uri, downloadPath).ConfigureAwait(false);
+                }
             
-            //Load file from uri
-            //TODO: Maybe redo with httpclient
-            using (WebClient client = new WebClient())
-            {
-                await client.DownloadFileTaskAsync(uri, downloadPath).ConfigureAwait(false);
-            }
         }
 
         //Load cover from downloaded file
@@ -84,7 +83,7 @@ public class MusicTrackViewModel : ViewModelBase
         
         IsLoadingCover = false;
     }
-    
+
     /// <summary>
     /// Parse data from json into metadata
     /// </summary>
@@ -93,14 +92,24 @@ public class MusicTrackViewModel : ViewModelBase
     /// <summary>
     ///  Create request to server and parse answer
     /// </summary>
+    /// TODO: DO normal answer to viewmodel
     public async Task SearchFileOnline()
     {
         //TODO: Server request
         var jsonstring = File.ReadAllText("testjson.json");
-        JsonNode node = JsonNode.Parse(jsonstring);
         
-        await LoadCoverFromURI("https://ia800201.us.archive.org/16/items/mbid-0875029f-362b-437a-aa84-0f9d6601730e/mbid-0875029f-362b-437a-aa84-0f9d6601730e-38463815033.png");
-        Track.GetMetadata(node);
+        //Parsing json response
+        JsonNode metadataNode = JsonNode.Parse(jsonstring)["properties"];
+        string imagePath = JsonNode.Parse(jsonstring)["image-link"].AsValue().ToString();
+        
+        if (imagePath != "")
+        {
+            await LoadCoverFromURI(
+                imagePath);
+        }
+
+        Track.GetMetadata(metadataNode);
+
     }
 
     /// <summary>
@@ -139,35 +148,45 @@ public class MusicTrackViewModel : ViewModelBase
     /// <summary>
     /// Apply changes for every metadata
     /// </summary>
-    public async Task ApplyChanges()
+    public async Task<bool> ApplyChanges()
     {
-        foreach (var unit in Track.MetadataUnits)
+        bool wasError = false;
+        try
         {
-            unit.ApplyChange(Track.Tagfile.Tag);
-        }
-
-        //Loading cover from cache file and save it to music file
-        string filepath =
-            $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{Track.CoverPath}";
-        
-        if (Track.CoverPath != "" && !IsLoadingCover && File.Exists(filepath))
-        {
-            Picture pic = new Picture()
+            foreach (var unit in Track.MetadataUnits)
             {
-                Type = PictureType.FrontCover,
-                MimeType = System.Net.Mime.MediaTypeNames.Image.Bmp
-            };
-            pic.Data = TagLib.ByteVector.FromPath(filepath);
-            Track.Tagfile.Tag.Pictures = new TagLib.IPicture[] { pic };
+                unit.ApplyChange(Track.Tagfile.Tag);
+            }
+
+            //Loading cover from cache file and save it to music file
+            string filepath =
+                $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{Track.CoverPath}";
+
+            if (Track.CoverPath != "" && !IsLoadingCover && File.Exists(filepath))
+            {
+                Picture pic = new Picture()
+                {
+                    Type = PictureType.FrontCover,
+                    MimeType = System.Net.Mime.MediaTypeNames.Image.Bmp
+                };
+                pic.Data = TagLib.ByteVector.FromPath(filepath);
+                Track.Tagfile.Tag.Pictures = new TagLib.IPicture[] { pic };
+            }
+
+            //Saving metadata
+            Track.CoverPath = "";
+            Track.Tagfile.Save();
+        }
+        catch
+        {
+            wasError = true;
         }
 
-        //Saving metadata
-        Track.CoverPath = "";
-        Track.Tagfile.Save();
-        
         //Updating view
         Track.UpdateOldValues();
         await SetLocalImage();
+        
+        return wasError;
     }
     
     /// <summary>
@@ -176,7 +195,6 @@ public class MusicTrackViewModel : ViewModelBase
     public async Task LoadCoverFromFile()
     {
         IsLoadingCover = true;
-        
         
         string filepath =
             $"{Settings.GlobalSettings.GeneralSettings.CoverPath}{Path.DirectorySeparatorChar}{Track.CoverPath}";
@@ -200,8 +218,9 @@ public class MusicTrackViewModel : ViewModelBase
     }
     
     //Load files from history
-    public static async Task<IEnumerable<MusicTrackViewModel>> LoadCachedAsync()
+    public static async Task<(IEnumerable<MusicTrackViewModel>,bool)> LoadCachedAsync()
     {
+        bool wasError = false;
         if (!Directory.Exists(Settings.GlobalSettings.GeneralSettings.HistoryPath))
         {
             Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.HistoryPath);
@@ -215,11 +234,18 @@ public class MusicTrackViewModel : ViewModelBase
         {
             if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
             await using var fs = File.OpenRead(file);
-            var track = await MusicTrack.LoadFromStream(fs).ConfigureAwait(false);
-            track.LoadedFrom = Path.GetFileName(file);
-            results.Add(new MusicTrackViewModel(track));
+            try
+            {
+                var track = await MusicTrack.LoadFromStream(fs);
+                track.LoadedFrom = Path.GetFileName(file);
+                results.Add(new MusicTrackViewModel(track));
+            }
+            catch
+            {
+                wasError = true;
+            }
         }
-
-        return results;
+        
+        return (results,wasError);
     }
 }

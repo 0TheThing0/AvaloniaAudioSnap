@@ -31,7 +31,15 @@ public class ResultWindowViewModel : ViewModelBase
 
     public async void ApplyChanges()
     {
-        await Track.ApplyChanges();
+        var res = await Track.ApplyChanges().ConfigureAwait(false);
+        if (res)
+        {
+            MainWindow.PopupMessage(MessageType.Error,"Error in applying changes");
+        }
+        else
+        {
+            MainWindow.PopupMessage(MessageType.Success,"Changes applied");
+        }
     }
 
     public async void SearchFileOnline()

@@ -28,90 +28,205 @@ public class FormatSettings : ReactiveObject, ICloneable
     private int _soundtrack = 50;
 
     [DataMember(Name = "album")]
-    public int Album  {
+    public int Album
+    {
         get => _album;
-        set => this.RaiseAndSetIfChanged(ref _album,value);
-    } 
-    [DataMember(Name="single")]
-    public int Single  {
-        get => _single;
-        set => this.RaiseAndSetIfChanged(ref _single,value);
-    }  
-    [DataMember(Name="ep")]
-    public int EP {
-        get => _ep;
-        set => this.RaiseAndSetIfChanged(ref _ep,value);
-    }  
-    [DataMember(Name="other")]
-    public int Other {
-        get => _other;
-        set => this.RaiseAndSetIfChanged(ref _other,value);
-    }  
-    [DataMember(Name="broadcast")]
-    public int Broadcast {
-        get => _broadcast;
-        set => this.RaiseAndSetIfChanged(ref _broadcast,value);
-    }  
-    [DataMember(Name="audio-drama")]
-    public int AudioDrama {
-        get => _audioDrama;
-        set => this.RaiseAndSetIfChanged(ref _audioDrama,value);
-    }  
-    [DataMember(Name="audiobook")]
-    public int Audiobook {
-        get => _audiobook;
-        set => this.RaiseAndSetIfChanged(ref _audiobook,value);
-    } 
-    [DataMember(Name="compilation")]
-    public int Compilation {
-        get => _compilation;
-        set => this.RaiseAndSetIfChanged(ref _compilation,value);
-    }  
-    [DataMember(Name="dj-mix")]
-    public int DjMix {
-        get => _djMix;
-        set => this.RaiseAndSetIfChanged(ref _djMix,value);
-    }  
-    [DataMember(Name="demo")]
-    public int Demo {
-        get => _demo;
-        set => this.RaiseAndSetIfChanged(ref _demo,value);
+        set {   value = Math.Min(100, value);
+                value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _album, value); }
     }
-    [DataMember(Name="field-recording")]
-    public int FieldRecording {
+
+    [DataMember(Name = "single")]
+    public int Single
+    {
+        get => _single;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _single, value);
+        }
+    }
+
+    [DataMember(Name = "ep")]
+    public int EP
+    {
+        get => _ep;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _ep, value);
+        }
+    }
+
+    [DataMember(Name = "other")]
+    public int Other
+    {
+        get => _other;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _other, value);
+        }
+    }
+
+    [DataMember(Name = "broadcast")]
+    public int Broadcast
+    {
+        get => _broadcast;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _broadcast, value);
+        }
+    }
+
+    [DataMember(Name = "audio-drama")]
+    public int AudioDrama
+    {
+        get => _audioDrama;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _audioDrama, value);
+        }
+    }
+
+    [DataMember(Name = "audiobook")]
+    public int Audiobook
+    {
+        get => _audiobook;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _audiobook, value);
+        }
+    }
+
+    [DataMember(Name = "compilation")]
+    public int Compilation
+    {
+        get => _compilation;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _compilation, value);
+        }
+    }
+
+    [DataMember(Name="dj-mix")]
+    public int DjMix
+    {
+        get => _djMix;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _djMix, value);
+        }
+    }
+
+    [DataMember(Name = "demo")]
+    public int Demo
+    {
+        get => _demo;
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _demo, value);
+        }
+    }
+
+    [DataMember(Name = "field-recording")]
+    public int FieldRecording
+    {
         get => _fieldRecording;
-        set => this.RaiseAndSetIfChanged(ref _fieldRecording,value);
-    }  
-    [DataMember(Name="interview")]
-    public int Interview {
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _fieldRecording, value);
+        }
+    }
+
+    [DataMember(Name = "interview")]
+    public int Interview
+    {
         get => _interview;
-        set => this.RaiseAndSetIfChanged(ref _interview,value);
-    }  
-    [DataMember(Name="live")]
-    public int Live {
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _interview, value);
+        }
+    }
+
+    [DataMember(Name = "live")]
+    public int Live
+    {
         get => _live;
-        set => this.RaiseAndSetIfChanged(ref _live,value);
-    } 
-    [DataMember(Name="mixtape")]
-    public int Mixtape {
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _live, value);
+        }
+    }
+
+    [DataMember(Name = "mixtape")]
+    public int Mixtape
+    {
         get => _mixtape;
-        set => this.RaiseAndSetIfChanged(ref _mixtape,value);
-    }  
-    [DataMember(Name="remix")]
-    public int Remix {
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _mixtape, value);
+        }
+    }
+
+    [DataMember(Name = "remix")]
+    public int Remix
+    {
         get => _remix;
-        set => this.RaiseAndSetIfChanged(ref _remix,value);
-    }  
-    [DataMember(Name="soundtrack")]
-    public int Soundtrack {
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _remix, value);
+        }
+    }
+
+    [DataMember(Name = "soundtrack")]
+    public int Soundtrack
+    {
         get => _soundtrack;
-        set => this.RaiseAndSetIfChanged(ref _soundtrack,value);
-    }  
-    [DataMember(Name="spokenword")]
-    public int Spokenword {
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _soundtrack, value);
+        }
+    }
+
+    [DataMember(Name = "spokenword")]
+    public int Spokenword
+    {
         get => _spokenword;
-        set => this.RaiseAndSetIfChanged(ref _spokenword,value);
-    }  
+        set
+        {
+            value = Math.Min(100, value);
+            value = Math.Max(0, value);
+            this.RaiseAndSetIfChanged(ref _spokenword, value);
+        }
+    }
 
     public object Clone()
     {

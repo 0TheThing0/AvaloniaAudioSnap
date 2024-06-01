@@ -84,9 +84,19 @@ public class SettingsWindowViewModel : ViewModelBase
     
     public async void ApplyChanges()
     {
-        Settings.GlobalSettings = _settings.Clone() as Settings;
-        await Settings.GlobalSettings?.Save();
-        IsDirty = false;
+        try
+        {
+            Settings.GlobalSettings = _settings.Clone() as Settings;
+            await Settings.GlobalSettings?.Save();
+            IsDirty = false;
+            MainWindow.PopupMessage(MessageType.Success, "Settings applied");
+        }
+        catch
+        {
+            MainWindow.PopupMessage(MessageType.Error, "Error in applying changes");
+        }
+        
+        
     }
 
     public async void ChooseCoverPath()
@@ -125,7 +135,7 @@ public class SettingsWindowViewModel : ViewModelBase
         }
         catch
         {
-            
+            MainWindow.PopupMessage(MessageType.Error,"Element was not added");
         }
     }
 }

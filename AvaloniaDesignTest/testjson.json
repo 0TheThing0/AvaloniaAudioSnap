@@ -1,30 +1,50 @@
 ﻿{
-  "album": "Зов крови",                 
-  "album-artists": [               
-    "Мельница"
+  "properties":{
+    "album": "Зов крови",                   
+    "album-artists": [                     
+      "Мельница"
+    ],
+    "album-artists-sort" : [              
+      "Mel",
+      "nica"
+    ],
+    "artists" : [                          
+      "Мельница"
+    ],
+    "disc" : 1,                
+    "disc-count" : 4,                  
+    "genres" : [                      
+      "folk",
+      "rock"
+    ],
+    "isrcs" : 1255213,                      
+    "length" : 1488,                    
+    "music-brainz-artist-id" : 215515123,   
+    "music-brainz-disc-id" : 15134512,     
+    "music-brainz-release-id" : 15135,      
+    "music-brainz-release-status" : 1515,   
+    "music-brainz-track-id" : 12515,      
+    "track" : 15,                         
+    "track-count" : 40,                 
+    "title" : "Ночная кобыла",           
+    "year" : 2014                     
+  },
+
+  "external-links" : [
+    "youtube.com",
+    "open.spotify.com"
   ],
-  "album-artists-sort" : [         
-    "Mel",
-    "nica"
+  "image-link" : "test.com",
+  
+  "missing-properties": [
+    "disc",
+    "track-count"
   ],
-  "artists" : [             
-    "Мельница"
-  ],
-  "disc" : 1,                      
-  "disc-count" : 4,
-  "genres" : [                  
-    "folk",
-    "rock"
-  ],
-  "isrc" : 1255213,              
-  "length" : 1488,                       
-  "music-brainz-artist-id" : 215515123,  
-  "music-brainz-disc-id" : 15134512,      
-  "music-brainz-release-id" : 15135,     
-  "music-brainz-release-status" : 1515, 
-  "music-brainz-track-id" : 12515,       
-  "track" : 15,                    
-  "track-count" : 40,                   
-  "title" : "Ночная кобыла",           
-  "year" : 2014                         
+  "invalid-properties": [
+    "artist",
+    "name-of-the-artist",
+    "last-name",
+    "credit-card-number"
+  ]
 }
+

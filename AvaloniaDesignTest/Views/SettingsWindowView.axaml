@@ -79,9 +79,9 @@
                             <Grid ColumnDefinitions="3*,1*">
                                 <TextBlock Grid.Column="0" Classes="Name">Matching rate</TextBlock>
                                 <NumericUpDown Grid.Column="1" Value="{Binding CurrentSettings.RequestSettings.MatchingRate}"
-                                               Maximum="100" Minimum="1"
-                                               Increment="1"
-                                               FormatString="0"
+                                               Maximum="1" Minimum="0"
+                                               Increment="0.1"
+                                               FormatString="0.00"
                                                CornerRadius="20,0,0,20"
                                 />
                                 
@@ -91,6 +91,9 @@
                                       Foreground="Black"
                                 IsChecked="{Binding CurrentSettings.RequestSettings.Cover}">Load cover</CheckBox>
                             
+                            <CheckBox
+                                      Foreground="Black"
+                                      IsChecked="{Binding CurrentSettings.RequestSettings.ExternalLinks}">Search links</CheckBox>
                             
                             <Grid ColumnDefinitions="3*,1*">
                                 <TextBlock Grid.Column="0" Classes="Name">Max cover size (px)</TextBlock>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -23,6 +24,14 @@ public class MainWindowViewModel : ViewModelBase
     private ResultWindowViewModel _resultViewModel;
     private Window _window;
     private bool _isSearch;
+
+    private ObservableCollection<NotifyMessage> _messages = new ObservableCollection<NotifyMessage>();
+    
+    public ObservableCollection<NotifyMessage> Messages
+    {
+        get => _messages;
+        set => this.RaiseAndSetIfChanged(ref _messages, value);
+    }
     
     public bool IsSearch
     {
@@ -69,8 +78,10 @@ public class MainWindowViewModel : ViewModelBase
         }
         catch
         {
+            PopupMessage(MessageType.Error, "Error in loading settings, base settings will be used");
         }
         Settings.GlobalSettings.Save();
+        
         //Creating Settings viewmodel with new settings
         _settingsViewModel = new SettingsWindowViewModel(this);
 
@@ -176,7 +187,15 @@ public class MainWindowViewModel : ViewModelBase
     {
         _resultViewModel?.Track.Track.SaveAsync();
     }
-    
+
+    public void PopupMessage(MessageType type, string message)
+    {
+        if (Messages.Count <= 10)
+        {
+            Messages.Add(new NotifyMessage(type, message));
+            Observable.Timer(DateTime.Now.AddSeconds(5), RxApp.MainThreadScheduler).Subscribe(_ => ClearNotification());
+        }
+    }
     /// <summary>
     /// Method to show errorViewModel 
     /// </summary>
@@ -206,10 +225,14 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public void ShowSettingsWindow()
     {
-        //_settingsViewModel.CurrentSettings = Settings.GlobalSettings;
         CurrentViewModel = _settingsViewModel;
     }
 
+    private void ClearNotification()
+    {
+        if (Messages.Count > 0)
+            Messages.RemoveAt(0); 
+    }
     /// <summary>
     /// Method to show libraryViewModel
     /// </summary>
@@ -238,17 +261,29 @@ public class MainWindowViewModel : ViewModelBase
     private async void LoadTracks()
     {
         //TODO: add in correct order with amount
-        var tracks = await MusicTrackViewModel.LoadCachedAsync();
-        foreach (var track in tracks)
+        try
         {
-            _libraryViewModel.Tracks.Add(track);
-        }
+            var tracks = await MusicTrackViewModel.LoadCachedAsync();
+            foreach (var track in tracks.Item1)
+            {
+                _libraryViewModel.Tracks.Add(track);
+            }
 
-        foreach (var track in _libraryViewModel.Tracks.ToList())
+            foreach (var track in _libraryViewModel.Tracks.ToList())
+            {
+                //TODO: make async
+                await track.Track.ConfigureData();
+                await track.LoadCoverFromFile();
+            }
+
+            if (tracks.Item2)
+            {
+                PopupMessage(MessageType.Error, "Error in loading history, some files are corrupted");
+            }
+        }
+        catch
         {
-            //TODO: make async
-            await track.Track.ConfigureData();
-            await track.LoadCoverFromFile();
+            PopupMessage(MessageType.Error, "Error in loading history");
         }
     }
 }
