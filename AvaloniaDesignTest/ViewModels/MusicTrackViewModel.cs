@@ -5,10 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using AvaloniaDesignTest.Models.Settings;
+using AvaloniaDesignTest.Views;
+using AvaloniaDesignTest.Web;
 using ReactiveUI;
 using TagLib;
 using File = System.IO.File;
@@ -95,17 +98,22 @@ public class MusicTrackViewModel : ViewModelBase
     /// TODO: DO normal answer to viewmodel
     public async Task SearchFileOnline()
     {
-        //TODO: Server request
-        var jsonstring = File.ReadAllText("testjson.json");
-        
+        var res = await AudioSnapSearchManager.SearchTrackOnFingerprint(Track);
         //Parsing json response
-        JsonNode metadataNode = JsonNode.Parse(jsonstring)["properties"];
-        string imagePath = JsonNode.Parse(jsonstring)["image-link"].AsValue().ToString();
+        JsonNode metadataNode = res.ResponseMetadata;
+        string imagePath = res.ImageLink;
         
         if (imagePath != "")
         {
-            await LoadCoverFromURI(
-                imagePath);
+            try
+            {
+                await LoadCoverFromURI(
+                    imagePath);
+            }
+            catch
+            {
+                
+            }
         }
 
         Track.GetMetadata(metadataNode);

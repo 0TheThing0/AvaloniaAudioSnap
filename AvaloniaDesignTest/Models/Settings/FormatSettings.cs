@@ -28,6 +28,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     private int _soundtrack = 50;
 
     [DataMember(Name = "album")]
+    [JsonPropertyName("album")]
     public int Album
     {
         get => _album;
@@ -37,6 +38,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "single")]
+    [JsonPropertyName("single")]
     public int Single
     {
         get => _single;
@@ -49,6 +51,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "ep")]
+    [JsonPropertyName("ep")]
     public int EP
     {
         get => _ep;
@@ -61,6 +64,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "other")]
+    [JsonPropertyName("other")]
     public int Other
     {
         get => _other;
@@ -73,6 +77,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "broadcast")]
+    [JsonPropertyName("broadcast")]
     public int Broadcast
     {
         get => _broadcast;
@@ -85,6 +90,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "audio-drama")]
+    [JsonPropertyName("audio-drama")]
     public int AudioDrama
     {
         get => _audioDrama;
@@ -97,6 +103,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "audiobook")]
+    [JsonPropertyName("audiobook")]
     public int Audiobook
     {
         get => _audiobook;
@@ -109,6 +116,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "compilation")]
+    [JsonPropertyName("compilation")]
     public int Compilation
     {
         get => _compilation;
@@ -121,6 +129,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name="dj-mix")]
+    [JsonPropertyName("dj-mix")]
     public int DjMix
     {
         get => _djMix;
@@ -133,6 +142,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "demo")]
+    [JsonPropertyName("demo")]
     public int Demo
     {
         get => _demo;
@@ -145,6 +155,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "field-recording")]
+    [JsonPropertyName("field-recording")]
     public int FieldRecording
     {
         get => _fieldRecording;
@@ -157,6 +168,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "interview")]
+    [JsonPropertyName("interview")]
     public int Interview
     {
         get => _interview;
@@ -169,6 +181,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "live")]
+    [JsonPropertyName("live")]
     public int Live
     {
         get => _live;
@@ -181,6 +194,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "mixtape")]
+    [JsonPropertyName("mixtape")]
     public int Mixtape
     {
         get => _mixtape;
@@ -193,6 +207,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "remix")]
+    [JsonPropertyName("remix")]
     public int Remix
     {
         get => _remix;
@@ -205,6 +220,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "soundtrack")]
+    [JsonPropertyName("soundtrack")]
     public int Soundtrack
     {
         get => _soundtrack;
@@ -217,6 +233,7 @@ public class FormatSettings : ReactiveObject, ICloneable
     }
 
     [DataMember(Name = "spokenword")]
+    [JsonPropertyName("spokenword")]
     public int Spokenword
     {
         get => _spokenword;

@@ -1,21 +1,41 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using AvaloniaDesignTest.Models.Settings;
 
 namespace AvaloniaDesignTest.Web;
 
 public class AudioSnapServerRequest
 {
-    [DataMember(Name="fingerprint")]
-    public string Fingerprint { get; set; }
+    [JsonPropertyName("fingerprint")] public string Fingerprint { get; set; } 
+
+    [JsonPropertyName("duration")] public int Duration { get; set; } 
     
-    [DataMember(Name="duration")]
-    public int Duration { get; set; }
+    [JsonPropertyName("matching-rate")]
+    public double MatchingRate { get; set; } = Settings.GlobalSettings.RequestSettings.MatchingRate;
     
-    [DataMember(Name="priorities")]
-    public RequestPriorities Priorities { get; set; }
+    [JsonPropertyName("cover")]
+    public bool Cover { get; set; } = Settings.GlobalSettings.RequestSettings.Cover;
     
-    public AudioSnapServerRequest()
+    [JsonPropertyName("cover-size")]
+    public int CoverSize { get; set; }  = Settings.GlobalSettings.RequestSettings.CoverSize;
+    
+    [JsonPropertyName("external-links")]
+    public bool Links { get; set; } = Settings.GlobalSettings.RequestSettings.ExternalLinks;
+    
+    [JsonPropertyName("priorities")]
+    public RequestPriorities Priorities { get; set; } = new RequestPriorities(
+        Settings.GlobalSettings.RequestSettings.ReleaseFormatSettings,
+        Settings.GlobalSettings.RequestSettings.CountryPriorities.ToList()
+    );
+    
+    [JsonPropertyName("release-properties")]
+    public List<string> ReleaseProperties { get; set; } = Settings.GlobalSettings.RequestSettings.ObservingMetadata.ToList();
+    
+    public AudioSnapServerRequest(string fingerprint, int duration)
     {
-        
+        Fingerprint = fingerprint;
+        Duration = duration;
     }
 }

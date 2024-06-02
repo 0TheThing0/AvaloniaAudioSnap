@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using AvaloniaDesignTest.Models.Settings;
 
 namespace AvaloniaDesignTest.Web;
 
 public class RequestPriorities
 {
-    [DataMember(Name="release-format")]
-    public Dictionary<string,float> ReleaseFormat { get; set; }
+    [JsonPropertyName("release-format")]
+    public FormatSettingsRequest ReleaseFormat { get; set; }
     
-    [DataMember(Name="release-country")]
-    public string[] ReleaseCountry { get; set; }
-    public RequestPriorities()
+    [JsonPropertyName("release-country")]
+    public List<string> ReleaseCountry { get; set; }
+    public RequestPriorities(FormatSettings formatSettings, List<string> releaseCountry)
     {
-        
+        ReleaseCountry = releaseCountry;
+        ReleaseFormat = new FormatSettingsRequest(formatSettings);
     }
 }
