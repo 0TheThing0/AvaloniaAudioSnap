@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:AvaloniaDesignTest.Views"
              xmlns:vm="clr-namespace:AvaloniaDesignTest.ViewModels"
+             xmlns:conv="using:AvaloniaDesignTest.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="AvaloniaDesignTest.Views.SettingsWindowView"
              x:DataType="vm:SettingsWindowViewModel">
@@ -12,8 +13,12 @@
             <StyleInclude Source="/Style/SettingsStyle.axaml" />
         </UserControl.Styles>
     
+    <UserControl.Resources>
+        <conv:NullBlocker x:Key="NullBlocker" />
+    </UserControl.Resources>
+    
         <DockPanel LastChildFill="True">
-            <StackPanel DockPanel.Dock="Bottom" Margin="20,-80,0,0" ZIndex="1">
+            <StackPanel DockPanel.Dock="Bottom" Margin="20,-120,0,0" ZIndex="1">
                 <TextBlock Foreground="#A82F2F"
                            HorizontalAlignment="Left"
                            Margin="3,0,0,0"
@@ -23,12 +28,18 @@
                 <Button Classes="ChoosePath"  Width="155" Height="40" HorizontalAlignment="Left"
                         Command="{Binding ApplyChanges}"
                         IsEnabled="{Binding IsDirty}">Apply changes</Button> 
+                
+                <Button Classes="ChoosePath"  Width="155" Height="40" HorizontalAlignment="Left"
+                        Margin="5,5,0,0"
+                        Command="{Binding ResetSettings}"
+                        Background="DarkRed"
+                        >Reset settings</Button> 
             </StackPanel>
             <TabControl TabStripPlacement="Left"
                         VerticalAlignment="Stretch"
                         DockPanel.Dock="Top">
                 
-                <TabItem Header="General setting">
+                <TabItem Header="General settings">
                     <ScrollViewer>
                         <StackPanel Margin="0,20,0,0" Spacing="7">
                             <TextBlock Classes="Name"> Cover path </TextBlock>
@@ -72,6 +83,7 @@
                                                Maximum="65535" Minimum="0"
                                                Increment="1"
                                                FormatString="0"
+                                               
                                 />
                                 
                             </Grid>
@@ -83,6 +95,7 @@
                                                Increment="0.1"
                                                FormatString="0.00"
                                                CornerRadius="20,0,0,20"
+                                               
                                 />
                                 
                             </Grid>

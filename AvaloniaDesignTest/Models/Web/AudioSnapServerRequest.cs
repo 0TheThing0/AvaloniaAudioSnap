@@ -13,13 +13,13 @@ public class AudioSnapServerRequest
     [JsonPropertyName("duration")] public int Duration { get; set; } 
     
     [JsonPropertyName("matching-rate")]
-    public double MatchingRate { get; set; } = Settings.GlobalSettings.RequestSettings.MatchingRate;
+    public double MatchingRate { get; set; } = (double)Settings.GlobalSettings.RequestSettings.MatchingRate;
     
     [JsonPropertyName("cover")]
     public bool Cover { get; set; } = Settings.GlobalSettings.RequestSettings.Cover;
     
     [JsonPropertyName("cover-size")]
-    public int CoverSize { get; set; }  = Settings.GlobalSettings.RequestSettings.CoverSize;
+    public int CoverSize { get; set; }  = (int)Settings.GlobalSettings.RequestSettings.CoverSize;
     
     [JsonPropertyName("external-links")]
     public bool Links { get; set; } = Settings.GlobalSettings.RequestSettings.ExternalLinks;

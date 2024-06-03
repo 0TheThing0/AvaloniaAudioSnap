@@ -7,56 +7,56 @@ namespace AvaloniaDesignTest.Web;
 
 public class FormatSettingsRequest
 {
-    [JsonPropertyName("album")] public int Album { get; set; }
+    [JsonPropertyName("Album")] public int Album { get; set; }
 
-    [JsonPropertyName("single")] public int Single { get; set; } 
+    [JsonPropertyName("Single")] public int Single { get; set; } 
     
-    [JsonPropertyName("ep")]
+    [JsonPropertyName("EP")]
     public int EP
     { get; set; }
     
-    [JsonPropertyName("other")]
+    [JsonPropertyName("Other")]
     public int Other{ get; set; }
     
-    [JsonPropertyName("broadcast")]
+    [JsonPropertyName("Broadcast")]
     public int Broadcast
     { get; set; }
     
-    [JsonPropertyName("audio-drama")]
+    [JsonPropertyName("Audio drama")]
     public int AudioDrama{ get; set; }
     
-    [JsonPropertyName("audiobook")]
+    [JsonPropertyName("Audiobook")]
     public int Audiobook{ get; set; }
     
-    [JsonPropertyName("compilation")]
+    [JsonPropertyName("Compilation")]
     public int Compilation
     { get; set; }
     
-    [JsonPropertyName("dj-mix")]
+    [JsonPropertyName("DJ-mix")]
     public int DjMix{ get; set; }
     
-    [JsonPropertyName("demo")]
+    [JsonPropertyName("Demo")]
     public int Demo{ get; set; }
     
-    [JsonPropertyName("field-recording")]
+    [JsonPropertyName("Field recording")]
     public int FieldRecording{ get; set; }
     
-    [JsonPropertyName("interview")]
+    [JsonPropertyName("Interview")]
     public int Interview{ get; set; }
     
-    [JsonPropertyName("live")]
+    [JsonPropertyName("Live")]
     public int Live{ get; set; }
     
-    [JsonPropertyName("mixtape")]
+    [JsonPropertyName("Mixtape/Street")]
     public int Mixtape{ get; set; }
     
-    [JsonPropertyName("remix")]
+    [JsonPropertyName("Remix")]
     public int Remix{ get; set; }
     
-    [JsonPropertyName("soundtrack")]
+    [JsonPropertyName("Soundtrack")]
     public int Soundtrack{ get; set; }
     
-    [JsonPropertyName("spokenword")]
+    [JsonPropertyName("Spokenword")]
     public int Spokenword{ get; set; }
 
     public FormatSettingsRequest(FormatSettings settings)

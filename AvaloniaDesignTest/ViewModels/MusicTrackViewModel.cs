@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Json;
-using System.Security.Cryptography;
-using System.Text.Json;
+using System.Reactive.Linq;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using AvaloniaDesignTest.Models.Settings;
 using AvaloniaDesignTest.Views;
 using AvaloniaDesignTest.Web;
+using DynamicData;
 using ReactiveUI;
 using TagLib;
 using File = System.IO.File;
@@ -71,13 +71,8 @@ public class MusicTrackViewModel : ViewModelBase
                     Directory.CreateDirectory(Settings.GlobalSettings.GeneralSettings.CoverPath);
                 }
 
-
-                //Load file from uri
-                //TODO: Maybe redo with httpclient
-                using (WebClient client = new WebClient())
-                {
-                    await client.DownloadFileTaskAsync(uri, downloadPath).ConfigureAwait(false);
-                }
+                
+                await AudioSnapSearchManager.WebClient.DownloadFileTaskAsync(uri, downloadPath).ConfigureAwait(false);
             
         }
 
@@ -95,29 +90,46 @@ public class MusicTrackViewModel : ViewModelBase
     /// <summary>
     ///  Create request to server and parse answer
     /// </summary>
-    /// TODO: DO normal answer to viewmodel
-    public async Task SearchFileOnline()
+    public async Task<NotifyMessage> SearchFileOnline()
     {
         var res = await AudioSnapSearchManager.SearchTrackOnFingerprint(Track);
-        //Parsing json response
-        JsonNode metadataNode = res.ResponseMetadata;
-        string imagePath = res.ImageLink;
-        
-        if (imagePath != "")
+
+        if (res.TaskStatus == HttpStatusCode.OK)
         {
-            try
+            //Parsing json response
+            JsonNode metadataNode = res.Response.ResponseMetadata;
+            string imagePath = res.Response.ImageLink;
+
+            Track.GetMetadata(metadataNode);
+            string result = "Track found!";
+            if (imagePath != "")
             {
-                await LoadCoverFromURI(
-                    imagePath);
+                try
+                {
+                    await LoadCoverFromURI(imagePath);
+                }
+                catch
+                {
+                    result += " Image cannot be loaded";
+                }
             }
-            catch
+            Track.ExternalLinks.Clear();
+            if (res.Response.ExternalLinks != null && Settings.GlobalSettings.RequestSettings.ExternalLinks)
             {
-                
+                Track.ExternalLinks.AddRange(res.Response.ExternalLinks);
+            }
+
+            return new NotifyMessage(MessageType.Success, result);
+        }
+        else
+        {
+            if (res.TaskStatus != 0)
+                return new NotifyMessage(MessageType.Error, res.TaskStatus.ToString());
+            else
+            {
+                return new NotifyMessage(MessageType.Error, "Server is not available");
             }
         }
-
-        Track.GetMetadata(metadataNode);
-
     }
 
     /// <summary>
@@ -132,7 +144,7 @@ public class MusicTrackViewModel : ViewModelBase
         {
             using (var stream = new MemoryStream(image.Data.Data))
             {
-                Track.Cover = await Task.Run(() => Bitmap.DecodeToWidth(stream, Settings.GlobalSettings.RequestSettings.CoverSize));
+                Track.Cover = await Task.Run(() => Bitmap.DecodeToWidth(stream, (int)Settings.GlobalSettings.RequestSettings.CoverSize));
             }
         }
         else
@@ -210,10 +222,10 @@ public class MusicTrackViewModel : ViewModelBase
         
         if (File.Exists(filepath))
         {
-            var imageStream = await File.ReadAllBytesAsync(filepath);
-            using (MemoryStream a = new MemoryStream(imageStream))
+            await using (FileStream fstream = File.OpenRead(filepath))
             {
-                Track.Cover = await Task.Run(() => Bitmap.DecodeToWidth(a, Settings.GlobalSettings.RequestSettings.CoverSize));
+                
+                Track.Cover = await Task.Run(() => Bitmap.DecodeToWidth(fstream, (int)Settings.GlobalSettings.RequestSettings.CoverSize));
 
             }
         }
@@ -236,21 +248,29 @@ public class MusicTrackViewModel : ViewModelBase
 
         var results = new List<MusicTrackViewModel>();
 
-        
-        //TODO: add sort and count
-        foreach (var file in Directory.EnumerateFiles(Settings.GlobalSettings.GeneralSettings.HistoryPath))
+        int readed = 0;
+        var files = Directory.GetFiles(Settings.GlobalSettings.GeneralSettings.HistoryPath)
+            .OrderBy(x => new FileInfo(x).LastWriteTime).Reverse();
+        foreach (var file in files)
         {
-            if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
-            await using var fs = File.OpenRead(file);
-            try
+            if (readed < Settings.GlobalSettings.GeneralSettings.HistorySize)
             {
-                var track = await MusicTrack.LoadFromStream(fs);
-                track.LoadedFrom = Path.GetFileName(file);
-                results.Add(new MusicTrackViewModel(track));
-            }
-            catch
-            {
-                wasError = true;
+                if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
+                await using var fs = File.OpenRead(file);
+                try
+                {
+                    var track = await MusicTrack.LoadFromStream(fs).ConfigureAwait(false);
+                    track.LoadedFrom = Path.GetFileName(file);
+                    if (File.Exists(track.Filepath))
+                    {
+                        results.Add(new MusicTrackViewModel(track));
+                        readed++;
+                    }
+                }
+                catch
+                {
+                    wasError = true;
+                }
             }
         }
         

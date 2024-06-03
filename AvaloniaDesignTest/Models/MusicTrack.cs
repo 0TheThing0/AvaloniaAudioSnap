@@ -38,6 +38,11 @@ public class MusicTrack : ReactiveObject
         get => _metadataUnits;
         set => this.RaiseAndSetIfChanged(ref _metadataUnits,value); }
     
+    [DataMember(Name="external-links")]
+    public ObservableCollection<string> ExternalLinks { 
+        get => _externalLinks;
+        set => this.RaiseAndSetIfChanged(ref _externalLinks,value); }
+    
     [IgnoreDataMember]
     public Bitmap? Cover
     {
@@ -83,6 +88,7 @@ public class MusicTrack : ReactiveObject
     private TagLib.File _file;
     private Bitmap? _cover;
     private ObservableCollection<MetadataUnit> _metadataUnits = new ObservableCollection<MetadataUnit>();
+    private ObservableCollection<string> _externalLinks = new ObservableCollection<string>();
     private MetadataUnit _artist;
     private MetadataUnit _title;
     

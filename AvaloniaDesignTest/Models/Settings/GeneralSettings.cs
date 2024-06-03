@@ -14,9 +14,25 @@ public class GeneralSettings : ReactiveObject, ICloneable
     private int _historySize = 20;
     private Dictionary<string, string> _metadataNameParity = new Dictionary<string, string>()
     {
-        {"album","Album"}
+        {"album","Album"},
+        {"artists", "Artists"},
+        {"title", "Title"},
+        {"album-artists", "Album artists"},
+        {"album-artists-sort", "Album artists (sorted)"},
+        {"disc", "Disc"},
+        {"disc-count", "Disc count"},
+        {"genres", "Genres"},
+        {"isrc", "ISRC"},
+        {"length", "Length"},
+        {"music-brainz-artist-id", "MusicBrainz artist ID"},
+        {"music-brainz-release-id", "MusicBrainz release ID"},
+        {"music-brainz-release-status", "MusicBrainz release status"},
+        {"music-brainz-track-id","MusicBrainz track ID"},
+        {"track", "Track"},
+        {"track-count", "Track count"},
+        {"year", "Year"}
     };
-
+    
     [DataMember(Name = "cover-path")]
     public string CoverPath
     {
@@ -31,14 +47,17 @@ public class GeneralSettings : ReactiveObject, ICloneable
     }  
 
     [DataMember(Name="history-size")] 
-    public int HistorySize
+    public int? HistorySize
     {
         get => _historySize;
         set
         {
-            value = Math.Min(value, 100);
-            value = Math.Max(value, 1);
-            this.RaiseAndSetIfChanged(ref _historySize, value);
+            if (value is not null)
+            {
+                value = Math.Min((int)value, 100);
+                value = Math.Max((int)value, 1);
+                this.RaiseAndSetIfChanged(ref _historySize, (int)value);
+            }
         }
     }
 

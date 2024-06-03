@@ -14,34 +14,29 @@ public class RequestSettings : ReactiveObject,ICloneable
     private bool _cover = true;
     private bool _links = true;
     private int _coverSize = 500;
-    private string _hostAddress = "musicbrainz.org";
-    private int _hostPort = 443;
+    private string _hostAddress = "192.168.1.103/snap";
+    private int _hostPort = 5015;
     private double _matchingRate = 0.5;
     private FormatSettings _releaseFormatSettings = new FormatSettings();
     
     [DataMember(Name="observing-metadata")]
     public ObservableCollection<string> ObservingMetadata { get; set; } = new ObservableCollection<string>(){
         "album",
+        "artists",
+        "title",
         "album-artists",
         "album-artists-sort",
-        "artists",
         "disc",
         "disc-count",
-        "first-album-artist",
-        "first-album-artist-sort",
-        "first-artist",
         "genres",
-        "first-genre",
         "isrc",
         "length",
         "music-brainz-artist-id",
-        "music-brainz-disc-id",
         "music-brainz-release-id",
         "music-brainz-release-status",
         "music-brainz-track-id",
         "track",
         "track-count",
-        "title",
         "year"
     };  
 
@@ -75,14 +70,17 @@ public class RequestSettings : ReactiveObject,ICloneable
     }
 
     [DataMember(Name="cover-size")] 
-    public int CoverSize
+    public int? CoverSize
     {
         get => _coverSize;
         set
         {
-            value = Math.Min(1200, value);
-            value = Math.Max(250, value);
-            this.RaiseAndSetIfChanged(ref _coverSize, value);
+            if (value is not null)
+            {
+                value = Math.Min(1200, (int)value);
+                value = Math.Max(250, (int)value);
+                this.RaiseAndSetIfChanged(ref _coverSize, (int)value);
+            }
         }
     }
 
@@ -92,26 +90,32 @@ public class RequestSettings : ReactiveObject,ICloneable
         set => this.RaiseAndSetIfChanged(ref _hostAddress,value);
     }  
     [DataMember(Name="host-port")] 
-    public int HostPort
+    public int? HostPort
     {
         get => _hostPort;
         set
         {
-            value = Math.Min(65535, value);
-            value = Math.Max(0, value);
-            this.RaiseAndSetIfChanged(ref _hostPort, value);
+            if (value is not null)
+            {
+                value = Math.Min(65535, (int)value);
+                value = Math.Max(0, (int)value);
+                this.RaiseAndSetIfChanged(ref _hostPort, (int)value);
+            }
         }
     }
 
     [DataMember(Name="matching-rate")]
-    public double MatchingRate
+    public double? MatchingRate
     {
         get => _matchingRate;
         set
         {
-            value = Math.Min(1, value);
-            value = Math.Max(0, value);
-            this.RaiseAndSetIfChanged(ref _matchingRate, value);
+            if (value is not null)
+            {
+                value = Math.Min(1, (double)value);
+                value = Math.Max(0, (double)value);
+                this.RaiseAndSetIfChanged(ref _matchingRate, (double)value);
+            }
         }
     }
 

@@ -58,7 +58,6 @@ public class SettingsWindowViewModel : ViewModelBase
         _settings = Settings.GlobalSettings.Clone() as Settings;
         _coverPath = Settings.GlobalSettings.GeneralSettings.CoverPath;
         _historyPath = Settings.GlobalSettings.GeneralSettings.HistoryPath;
-        CurrentSettings.WhenAnyPropertyChanged(nameof(Settings.GlobalSettings));
 
         Observable.Merge(
             Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
@@ -94,6 +93,37 @@ public class SettingsWindowViewModel : ViewModelBase
         catch
         {
             MainWindow.PopupMessage(MessageType.Error, "Error in applying changes");
+        }
+        
+        
+    }
+    
+    public async void ResetSettings()
+    {
+        try
+        {
+            CurrentSettings = new Settings();
+            
+            Observable.Merge(
+                Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                    handler => _settings.RequestSettings.PropertyChanged += handler,
+                    handler => _settings.RequestSettings.PropertyChanged -= handler
+                ),
+                Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                    handler => _settings.RequestSettings.ReleaseFormatSettings.PropertyChanged += handler,
+                    handler => _settings.RequestSettings.ReleaseFormatSettings.PropertyChanged -= handler
+                ),
+                Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                    handler => _settings.GeneralSettings.PropertyChanged += handler,
+                    handler => _settings.GeneralSettings.PropertyChanged -= handler
+                )
+
+            ).Subscribe(_ => SettingsChange());
+            IsDirty = true;
+        }
+        catch
+        {
+            MainWindow.PopupMessage(MessageType.Error, "Error in restoring settings");
         }
         
         

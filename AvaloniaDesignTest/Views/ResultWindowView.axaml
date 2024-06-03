@@ -3,10 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="using:AvaloniaDesignTest.Views"
+             xmlns:conv="using:AvaloniaDesignTest.Converters"
              xmlns:vm="clr-namespace:AvaloniaDesignTest.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="AvaloniaDesignTest.Views.ResultWindowView"
-             x:DataType="vm:ResultWindowViewModel">
+             x:DataType="vm:ResultWindowViewModel"
+             x:Name = "ResWindow">
+    
+    <UserControl.Resources>
+        <conv:UrlConverter x:Key="UrlConverter" />
+    </UserControl.Resources>
     
     <UserControl.Styles>
         <StyleInclude Source="/Style/TextBox.xaml"></StyleInclude>
@@ -19,6 +25,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
+        
     </UserControl.Styles>
     <Grid RowDefinitions="11*,9*">
         <!--Icons-->
@@ -52,10 +59,35 @@
             <UserControl Grid.Column="3" Content="{Binding Track}">
             </UserControl>
             
-            <TextBox Grid.Column="5" Classes="ItemResource"> hello</TextBox>
             
-            <!--References (I don't know how to do this)-->
-            <StackPanel Grid.Column="5" Margin="0,20,0,0" Spacing="10" VerticalAlignment="Top">
+            <!--References-->
+            <StackPanel Grid.Column="5" Margin="0,20,0,0" VerticalAlignment="Top">
+                <TextBlock
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center"
+                 FontSize="18"
+                 FontWeight="Heavy"
+                 Foreground="Black"
+                 IsVisible="{Binding Track.Track.ExternalLinks, 
+                 Converter={x:Static ObjectConverters.IsNotNull}}">Links</TextBlock>
+                
+                 <ScrollViewer >
+                     
+                    <ItemsControl ItemsSource="{Binding Track.Track.ExternalLinks}"
+                                  x:Name="Links">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Margin="0,8,0,0"
+                                    Background="#46969c"
+                                    MinHeight="40"
+                                    Foreground="White"
+                                    Command="{Binding #ResWindow.ShowUrl}" CommandParameter="{Binding}"
+                                    Content="{Binding Converter={StaticResource UrlConverter}}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                 </ScrollViewer>
             </StackPanel>
         </Grid>
         

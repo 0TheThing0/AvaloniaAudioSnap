@@ -148,22 +148,24 @@ public class MainWindowViewModel : ViewModelBase
         //Creating new result view model for new track
         CreateResultWindow();
         await Task.Run(() => _resultViewModel.Search(file));
-        
-        //Adding this track to history
-        //TODO: redo adding
-        var viewmodel =
-            _libraryViewModel.Tracks.FirstOrDefault(x => x.Track.Filepath == _resultViewModel.Track.Track.Filepath, null);
-        var trackPos = _libraryViewModel.Tracks.IndexOf(viewmodel);
-        if (trackPos != -1)
-        {
-            _resultViewModel.Track.Track.LoadedFrom = viewmodel.Track.LoadedFrom;
-            _libraryViewModel.Tracks[trackPos] = _resultViewModel.Track;
-        }
-        else
-        {
-            _libraryViewModel.Tracks.Add(_resultViewModel.Track);
-        }
 
+        if (_resultViewModel.Track != null)
+        {
+            //Adding this track to history
+            var viewmodel =
+                _libraryViewModel.Tracks.FirstOrDefault(x => x.Track.Filepath == _resultViewModel.Track.Track.Filepath,
+                    null);
+            var trackPos = _libraryViewModel.Tracks.IndexOf(viewmodel);
+            if (trackPos != -1)
+            {
+                _resultViewModel.Track.Track.LoadedFrom = viewmodel.Track.LoadedFrom;
+                _libraryViewModel.Tracks.Move(trackPos, 0);
+            }
+            else
+            {
+                _libraryViewModel.Tracks.Insert(0, _resultViewModel.Track);
+            }
+        }
 
         IsSearch = false;
     }
@@ -173,7 +175,7 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     private void CreateResultWindow()
     {
-        _resultViewModel?.Track.Track.SaveAsync();
+        _resultViewModel?.Track?.Track?.SaveAsync();
         _resultViewModel = new ResultWindowViewModel(this);
         _resultViewModel.SearchCommand.Subscribe(_ => ChooseFile());
         _resultViewModel.WrongInputCommand.Subscribe(_ => ShowErrorWindow());
@@ -185,7 +187,7 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public void Save()
     {
-        _resultViewModel?.Track.Track.SaveAsync();
+        _resultViewModel?.Track?.Track?.SaveAsync();
     }
 
     public void PopupMessage(MessageType type, string message)
@@ -193,6 +195,15 @@ public class MainWindowViewModel : ViewModelBase
         if (Messages.Count <= 10)
         {
             Messages.Add(new NotifyMessage(type, message));
+            Observable.Timer(DateTime.Now.AddSeconds(5), RxApp.MainThreadScheduler).Subscribe(_ => ClearNotification());
+        }
+    }
+    
+    public void PopupMessage(NotifyMessage message)
+    {
+        if (Messages.Count <= 10)
+        {
+            Messages.Add(message);
             Observable.Timer(DateTime.Now.AddSeconds(5), RxApp.MainThreadScheduler).Subscribe(_ => ClearNotification());
         }
     }
@@ -209,7 +220,7 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public async void ShowResultWindow()
     {
-        CurrentViewModel = _resultViewModel is not null ? _resultViewModel : _searchViewModel;
+        CurrentViewModel = (_resultViewModel is not null && _resultViewModel.Track is not null) ? _resultViewModel : _searchViewModel;
     }
     
     /// <summary>
@@ -247,7 +258,7 @@ public class MainWindowViewModel : ViewModelBase
     /// <param name="trackViewModel"></param>
     public void ShowResultWindow(MusicTrackViewModel? trackViewModel)
     {
-        if (trackViewModel is not null)
+        if (trackViewModel is not null  && trackViewModel.Track is not null)
         {
             CreateResultWindow();
             _resultViewModel.Track = trackViewModel;
@@ -260,7 +271,6 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     private async void LoadTracks()
     {
-        //TODO: add in correct order with amount
         try
         {
             var tracks = await MusicTrackViewModel.LoadCachedAsync();
@@ -271,7 +281,6 @@ public class MainWindowViewModel : ViewModelBase
 
             foreach (var track in _libraryViewModel.Tracks.ToList())
             {
-                //TODO: make async
                 await track.Track.ConfigureData();
                 await track.LoadCoverFromFile();
             }

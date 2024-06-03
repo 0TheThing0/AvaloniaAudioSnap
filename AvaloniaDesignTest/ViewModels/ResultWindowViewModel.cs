@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
+using AvaloniaDesignTest.Views;
 using Chromaprint;
 using ReactiveUI;
 
@@ -16,10 +19,12 @@ public class ResultWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _trackViewModel, value);
     }
     
+    public string CurrentItem { get; set; }
     public MainWindowViewModel MainWindow { get; init; }
     public ReactiveCommand<Unit, Unit> SearchCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowResultCommand { get; }
     public ReactiveCommand<Unit, Unit> WrongInputCommand { get; }
+    
     
     public ResultWindowViewModel(MainWindowViewModel mainWindow)
     {
@@ -42,9 +47,12 @@ public class ResultWindowViewModel : ViewModelBase
         }
     }
 
-    public async void SearchFileOnline()
+    public async Task SearchFileOnline()
     {
-        await Track.SearchFileOnline();
+        MainWindow.IsSearch = true;
+        var message = await Track.SearchFileOnline();
+        MainWindow.PopupMessage(message);
+        MainWindow.IsSearch = false;
     }
     
     public async void Search(IStorageFile file)
@@ -61,4 +69,10 @@ public class ResultWindowViewModel : ViewModelBase
             await _trackViewModel.Analyze();
         }
     }
+
+    public async void ShowUrl()
+    {
+        Process.Start(new ProcessStartInfo(CurrentItem) {UseShellExecute = true}) ;
+    }
+    
 }

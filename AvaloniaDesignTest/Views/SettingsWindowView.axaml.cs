@@ -15,12 +15,17 @@ public partial class SettingsWindowView : UserControl
 
     private void Add_OnClick(object? sender, RoutedEventArgs e)
     {
-        (this.DataContext as SettingsWindowViewModel).AddMetadata(Metadata.Text);
+        if (Metadata.Text is not null && Metadata.Text != "")
+            (this.DataContext as SettingsWindowViewModel).AddMetadata(Metadata.Text);
     }
 
     private void Remove_OnClick(object? sender, RoutedEventArgs e)
     {
         (this.DataContext as SettingsWindowViewModel).RemoveMetadata(ListBox.SelectedIndex);
     }
-    
+
+    private void NumericUpDown_OnValueChanged(object? sender, NumericUpDownValueChangedEventArgs e)
+    {
+        
+    }
 }
