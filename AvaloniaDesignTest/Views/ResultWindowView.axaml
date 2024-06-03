@@ -61,8 +61,8 @@
             
             
             <!--References-->
-            <StackPanel Grid.Column="5" Margin="0,20,0,0" VerticalAlignment="Top">
-                <TextBlock
+            <Grid Grid.Column="5" RowDefinitions="Auto,*" Margin="0,20,0,0" VerticalAlignment="Stretch">
+                <TextBlock Grid.Row="0"
                  VerticalAlignment="Center"
                  HorizontalAlignment="Center"
                  FontSize="18"
@@ -71,7 +71,7 @@
                  IsVisible="{Binding Track.Track.ExternalLinks, 
                  Converter={x:Static ObjectConverters.IsNotNull}}">Links</TextBlock>
                 
-                 <ScrollViewer >
+                 <ScrollViewer VerticalAlignment="Stretch" Grid.Row="1">
                      
                     <ItemsControl ItemsSource="{Binding Track.Track.ExternalLinks}"
                                   x:Name="Links">
@@ -88,7 +88,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                  </ScrollViewer>
-            </StackPanel>
+            </Grid>
         </Grid>
         
           <!--Track data-->
