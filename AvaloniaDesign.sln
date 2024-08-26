@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaDesignTest", "AvaloniaDesignTest\AvaloniaDesignTest.csproj", "{1C4F96FC-AC96-4234-8F93-522D2A19B1CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaAudioSnap", "AvaloniaDesignTest\AvaloniaAudioSnap.csproj", "{1C4F96FC-AC96-4234-8F93-522D2A19B1CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chromaprint", "..\Chromaprint_lib\Chromaprint.csproj", "{2E427407-48C7-49C9-BFB2-51872C41E817}"
 EndProject

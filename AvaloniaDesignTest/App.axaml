@@ -11,6 +11,6 @@
   
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="avares://AvaloniaDesignTest/Icons.axaml" />
+        <StyleInclude Source="avares://AvaloniaAudioSnap/Icons.axaml" />
     </Application.Styles>
 </Application>
