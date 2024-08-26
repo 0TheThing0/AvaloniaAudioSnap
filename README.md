@@ -26,7 +26,7 @@ In order to build the project you'll have to add a reference to [our Chromaprint
 Considering this repository, it can be said that, as a result, a client has been an interesting project, in which I tried to create client-server application using AvaloniaUI. Ofcourse, this app is far away from being perfect: code is "dirty", the structure is far from ideal, some libraries I used are not multiplatform. But it was interesting and educational to try something so big, especially with someone else (thanks [SignificantNose])
 
 
-[AudioSnap microservice]: <https://github.com/0TheThing0/AvaloniaAudioSnap>
+[AudioSnap microservice]: https://github.com/SignificantNose/AudioSnapServer
 [Chromaprint library]: <https://github.com/0TheThing0/Chromaprint_lib>
 [Original chromaprint library]: <https://github.com/acoustid/chromaprint/tree/master>
 [Chromaprint article]: <https://oxygene.sk/2011/01/how-does-chromaprint-work/>
